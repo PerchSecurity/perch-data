@@ -4,8 +4,9 @@
   "description": "HOC for managing data via props. Inspired by apollo-client.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "prettier --write src/**/*.{js,jsx}"
+    "lib": "babel src --out-dir lib",
+    "lint": "prettier --write src/**/*.{js,jsx} && eslint src/**",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -24,7 +25,10 @@
     "react": ">=15.0.0"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-eslint": "^8.0.1",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.6.1",
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^14.1.0",
@@ -33,11 +37,10 @@
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.10.3",
     "husky": "^0.14.3",
+    "prettier": "^1.7.4",
     "react": ">=15.0.0"
   },
   "dependencies": {
-    "immutability-helper": "^2.4.0",
-    "lodash": "^4.17.4",
-    "prettier": "^1.7.4"
+    "immutability-helper": "^2.4.0"
   }
 }
