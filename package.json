@@ -1,0 +1,43 @@
+{
+  "name": "withdata",
+  "version": "1.0.0",
+  "description": "HOC for managing data via props. Inspired by apollo-client.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "prettier --write src/**/*.{js,jsx}"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/usePF/withdata.git"
+  },
+  "keywords": [
+    "hoc"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/usePF/withdata/issues"
+  },
+  "homepage": "https://github.com/usePF/withdata#readme",
+  "peerDependencies": {
+    "react": ">=15.0.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.0.1",
+    "babel-preset-env": "^1.6.1",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^14.1.0",
+    "eslint-config-prettier": "^2.6.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^4.0.0",
+    "eslint-plugin-react": "^6.10.3",
+    "husky": "^0.14.3",
+    "react": ">=15.0.0"
+  },
+  "dependencies": {
+    "immutability-helper": "^2.4.0",
+    "lodash": "^4.17.4",
+    "prettier": "^1.7.4"
+  }
+}
