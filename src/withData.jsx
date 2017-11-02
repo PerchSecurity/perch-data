@@ -38,7 +38,7 @@ function withData(actions) {
             this.setState(prevState =>
               update(prevState, {
                 data: {
-                  [actionName]: { $set: { loading, goToPage }, $merge: result }
+                  [actionName]: { $merge: { loading, goToPage, ...result } }
                 }
               })
             );
@@ -51,7 +51,7 @@ function withData(actions) {
               this.setState(prevState =>
                 update(prevState, {
                   data: {
-                    [actionName]: { $set: { loading, error } }
+                    [actionName]: { $merge: { loading, error } }
                   }
                 })
               );
