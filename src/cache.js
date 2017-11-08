@@ -8,14 +8,27 @@ export const set = (key, value) => {
   store.set(key, value);
 };
 
-export const get = (key, dataFn, onNext, onError, nocache = false) => {
-  store.observe(key, onNext);
-  const cachedData = store.get(key);
+export const unobserveData = observeId => {
+    store.unobserve(observeId);
+  };
+
+export const observeData = (
+  defaultKey,
+  dataFn,
+  onNext,
+  onError,
+  nocache = false
+) => {
+  const cachedData = store.get(defaultKey);
   if (nocache || !cachedData) {
-    dataFn()
-      .then(value => set(key, value))
+    return dataFn()
+      .then(({ cacheKey, ...data } = {}) => {
+        const key = cacheKey || defaultKey;
+        set(key, data);
+        return store.observe(key, onNext);
+      })
       .catch(onError);
-  } else {
-    onNext(cachedData);
   }
+  onNext(cachedData);
+  return Promise.resolve(store.observe(defaultKey, onNext));
 };
