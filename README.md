@@ -45,7 +45,7 @@ withData(queryObject: Object)
 
 The withData funtion currently only accepts one argument, an object of queries to execute.
 
-For each entry, the key is the **future name of the entry** in the data prop and the value is the **function that will yeild the corrosponding data** (as a promise).
+For each entry, the key is the **desired name of the entry** in the data prop and the value is the **function that will yeild the corrosponding data** (as a promise). The name of the entry is also used as the default cacheKey, if the action does not provide one.
 
 In the following snippet, the child component will get a `data` prop with a `notifications` entry that will eventually resolve the vaule of `getNotifications`.
 
@@ -69,6 +69,21 @@ withData({
 // With object destructuring
 withData({
   notification: ({ params }) => getNotification(params.id)
+})
+```
+
+#### Cache control options
+
+By default, every entry is cached for one minute. You can overwrite this by passing an array (instead of a function) as the entry's value, with the first item being the action (function that returns a promise) and the second being an object with any of the following properties:
+
+- `maxAge: Number` - sets the time (in seconds) that the data should be cached
+- `noCache: Boolean` - skips the cache lookup and forces the action to be run
+
+In the following snippet, we will ignore the cached data for `notifications` and keep the freshly-loaded data for 5 minutes.
+
+```js
+withData({
+  notifications: [getNotifications, { maxAge: 5 * 60, noCache: true }]
 })
 ```
 
