@@ -99,6 +99,7 @@ The following snippet will call `getNotifications` every 5 seconds:
 withData({
   notifications: [getNotifications, { pollInterval: 5 }]
 })
+```
 
 #### Composing HOCs
 
