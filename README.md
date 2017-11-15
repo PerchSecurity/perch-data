@@ -87,6 +87,19 @@ withData({
 })
 ```
 
+**NOTE:** Any action that you would like to do custom caching with but return a `cacheKey` and `fromCache` property to avoid the default behavior from overriding the custom action cache. You should implement the store.js [expire plugin](https://github.com/marcuswestin/store.js/blob/master/plugins/expire.js) to prevent key recycling if your action uses store.js internally. See [axios-store-plugin](https://github.com/usePF/axios-store-plugin) for an example implementation.
+
+#### Polling
+
+If you want to poll an action at a regular interval, pass a `pollInterval` entry to the options object like we did for cache-control above. The poll will automaticlly start when the component is mounted and clear when the component is unmounted.
+
+The following snippet will call `getNotifications` every 5 seconds:
+
+```js
+withData({
+  notifications: [getNotifications, { pollInterval: 5 }]
+})
+
 #### Composing HOCs
 
 If you have another HOC in the component like [withStyles](https://material-ui-next.com/customization/css-in-js/#api) you will want all of the HOCs to be applied. You can simply "nest" them as you would for function composition, or use a library like [Recompose](https://github.com/acdlite/recompose).
