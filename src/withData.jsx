@@ -7,7 +7,6 @@ function withData(actions) {
     return class extends React.Component {
       constructor(props) {
         super(props);
-
         // Set all queries to { loading: true, refetch: getData() }
         const data = {};
         const actionNames = Object.keys(actions);
@@ -17,7 +16,11 @@ function withData(actions) {
             refetch: () => this.getData(actionName, { noCache: true })
           };
         });
-        this.state = { observeIds: [], data };
+        this.state = {
+          data,
+          polls: [],
+          observeIds: []
+        };
       }
 
       goToPage = (actionName, page) => {
@@ -78,12 +81,23 @@ function withData(actions) {
           data => this.onNext(actionName, data),
           error => this.onError(actionName, error),
           { noCache, ...childOptions }
-        ).then(observeId => {
-          this.setState(prevState =>
-            update(prevState, {
-              observeIds: { $push: [observeId] }
-            })
-          );
+        ).then(result => {
+          if (Array.isArray(result)) {
+            const [observeId, poll] = result;
+            this.setState(prevState =>
+              update(prevState, {
+                observeIds: { $push: [observeId] },
+                polls: { $push: [poll] }
+              })
+            );
+          } else {
+            const observeId = result;
+            this.setState(prevState =>
+              update(prevState, {
+                observeIds: { $push: [observeId] }
+              })
+            );
+          }
         });
       };
 
@@ -94,9 +108,12 @@ function withData(actions) {
       }
 
       componentWillUnmount() {
-        const { observeIds } = this.state;
+        const { observeIds, polls } = this.state;
         observeIds.forEach(cacheKey => {
           unobserveData(cacheKey);
+        });
+        polls.forEach(poll => {
+          clearInterval(poll);
         });
       }
 
