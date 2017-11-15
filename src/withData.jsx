@@ -14,10 +14,10 @@ function withData(actions) {
         actionNames.forEach(actionName => {
           data[actionName] = {
             loading: true,
-            refetch: () => this.getData(actionName, { nocache: true })
+            refetch: () => this.getData(actionName, { noCache: true })
           };
         });
-        this.state = { obeserveIds: [], data };
+        this.state = { observeIds: [], data };
       }
 
       goToPage = (actionName, page) => {
@@ -60,18 +60,28 @@ function withData(actions) {
         }
       };
 
-      getData = (actionName, options) => {
-        const mergedOptions = Object.assign({}, this.props, options);
+      getData = (actionName, options = {}) => {
+        const { noCache, ...overrides } = options;
+        let action;
+        let childOptions = {};
+
+        if (Array.isArray(actions[actionName])) {
+          action = actions[actionName][0];
+          childOptions = actions[actionName][1] || {};
+        } else {
+          action = actions[actionName];
+        }
+
         observeData(
           actionName,
-          () => actions[actionName](mergedOptions),
+          () => action({ ...this.props, ...overrides }),
           data => this.onNext(actionName, data),
           error => this.onError(actionName, error),
-          mergedOptions.nocache
-        ).then(obeserveId => {
+          { noCache, ...childOptions }
+        ).then(observeId => {
           this.setState(prevState =>
             update(prevState, {
-              obeserveIds: { $push: [obeserveId] }
+              observeIds: { $push: [observeId] }
             })
           );
         });
@@ -84,8 +94,8 @@ function withData(actions) {
       }
 
       componentWillUnmount() {
-        const { obeserveIds } = this.state;
-        obeserveIds.forEach(cacheKey => {
+        const { observeIds } = this.state;
+        observeIds.forEach(cacheKey => {
           unobserveData(cacheKey);
         });
       }
