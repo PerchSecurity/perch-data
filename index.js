@@ -1,12 +1,11 @@
 "use strict";
 
 var withData = require("./lib/withData").default;
-var disableCache = require("./lib/cache").disableCache;
+export { disableCache } from "./lib/cache";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports.default = withData;
-exports.disableCache = disableCache;
+export default withData;
 module.exports = exports["default"];
