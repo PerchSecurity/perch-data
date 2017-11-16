@@ -8,9 +8,9 @@ const SECOND = 1000;
 store.addPlugin([expirePlugin, observePlugin]);
 
 const explorer = cosmiconfig("withdata", { sync: true });
-const globalConfig = explorer.load(process.cwd()) || {};
+const defaultConfig = explorer.load(process.cwd()) || {};
 
-export const set = (key, value, maxAge = globalConfig.maxAge) => {
+export const set = (key, value, maxAge = defaultConfig.maxAge) => {
   if (maxAge) {
     const expiresAt = new Date().getTime() + maxAge * SECOND;
     store.set(key, value, expiresAt);
@@ -26,7 +26,7 @@ export const observeData = (
   onError,
   options = {}
 ) => {
-  const { maxAge, noCache, pollInterval } = { ...globalConfig, ...options };
+  const { maxAge, noCache, pollInterval } = { ...defaultConfig, ...options };
   const cachedData = store.get(defaultKey);
   const shouldUseCache = !noCache && cachedData;
   const useDataFromCache = () => {
