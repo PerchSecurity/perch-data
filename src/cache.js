@@ -1,22 +1,16 @@
 import store from "store";
 import expirePlugin from "store/plugins/expire";
 import observePlugin from "store/plugins/observe";
-import cosmiconfig from "cosmiconfig";
 
 const SECOND = 1000;
 
 store.addPlugin([expirePlugin, observePlugin]);
 
-const explorer = cosmiconfig("withdata", { sync: true });
-const defaultConfig = explorer.load(process.cwd()) || {};
+const defaultConfig = { maxAge: 1 };
 
 export const set = (key, value, maxAge = defaultConfig.maxAge) => {
-  if (maxAge) {
-    const expiresAt = new Date().getTime() + maxAge * SECOND;
-    store.set(key, value, expiresAt);
-  } else {
-    store.set(key, value);
-  }
+  const expiresAt = new Date().getTime() + maxAge * SECOND;
+  store.set(key, value, expiresAt);
 };
 
 export const observeData = (
