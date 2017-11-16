@@ -2,10 +2,10 @@ import store from "store";
 import expirePlugin from "store/plugins/expire";
 import observePlugin from "store/plugins/observe";
 
+store.addPlugin([expirePlugin, observePlugin]);
+
 const SECOND = 1000;
 const DEFAULT_MAXAGE = 60 * SECOND;
-
-store.addPlugin([expirePlugin, observePlugin]);
 
 export const set = (key, value, maxAge = DEFAULT_MAXAGE) => {
   const expiresAt = new Date().getTime() + maxAge;
@@ -17,20 +17,32 @@ export const observeData = (
   dataFn,
   onNext,
   onError,
-  { maxAge, noCache } = {}
+  { maxAge, noCache, pollInterval } = {}
 ) => {
   const cachedData = store.get(defaultKey);
-  if (noCache || !cachedData) {
-    return dataFn()
-      .then(({ cacheKey, ...data } = {}) => {
+  const shouldUseCache = !noCache && cachedData;
+  const useDataFromCache = () => {
+    onNext(cachedData);
+    return Promise.resolve(store.observe(defaultKey, onNext));
+  };
+  const fetchFreshData = () =>
+    dataFn()
+      .then(({ cacheKey, fromCache, ...data } = {}) => {
         const key = cacheKey || defaultKey;
-        set(key, data, maxAge);
-        return store.observe(key, onNext);
+        if (!fromCache) set(key, data, maxAge);
+        return key;
       })
       .catch(onError);
+
+  if (pollInterval) {
+    const poll = setInterval(() => fetchFreshData(), pollInterval * SECOND);
+    return shouldUseCache
+      ? useDataFromCache().then(observeId => [observeId, poll])
+      : fetchFreshData().then(key => [store.observe(key, onNext), poll]);
+  } else if (shouldUseCache) {
+    return useDataFromCache();
   }
-  onNext(cachedData);
-  return Promise.resolve(store.observe(defaultKey, onNext));
+  return fetchFreshData().then(key => store.observe(key, onNext));
 };
 
 export const unobserveData = observeId => {
