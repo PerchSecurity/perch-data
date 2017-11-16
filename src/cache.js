@@ -1,14 +1,15 @@
 import store from "store";
 import expirePlugin from "store/plugins/expire";
 import observePlugin from "store/plugins/observe";
-import cosmiconfig from "cosmiconfig";
 
 const SECOND = 1000;
 
 store.addPlugin([expirePlugin, observePlugin]);
 
-const explorer = cosmiconfig("withdata", { sync: true });
-const defaultConfig = explorer.load(process.cwd()) || {};
+const defaultConfig = process.env.NODE_ENV === "dev" ? {
+  "maxAge": 0,
+  "noCache": true
+} : {};
 
 export const set = (key, value, maxAge = defaultConfig.maxAge) => {
   if (maxAge) {
