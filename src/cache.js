@@ -6,13 +6,11 @@ const SECOND = 1000;
 
 store.addPlugin([expirePlugin, observePlugin]);
 
-const defaultConfig =
-  process.env.NODE_ENV === "dev"
-    ? {
-        maxAge: 0,
-        noCache: true
-      }
-    : {};
+let defaultConfig = { maxAge: 60 };
+
+export const disableCache = () => {
+  defaultConfig = { maxAge: 0, noCache: true };
+};
 
 export const set = (key, value, maxAge = defaultConfig.maxAge) => {
   if (maxAge) {
