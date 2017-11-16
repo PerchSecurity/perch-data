@@ -175,3 +175,33 @@ const Notifications = ({ data: { notifications } }) => (
 Currently `withData` assumes that your error will be [formatted like an Axios error](https://github.com/axios/axios#handling-errors). This was explicitly added to filter out any errors from the child component that were not caused by data fetching.
 
 In the future, this may become more generic and support other formats.
+
+### Configuration
+
+This project uses [cosmiconfig](https://github.com/davidtheclark/cosmiconfig) to handle global defaults. You can specify a default `maxAge`, `noCache`, and `pollInterval`.
+
+#### via `package.json` file
+
+The following code will disable all caching.
+
+```json
+...
+  "withdata": {
+    "maxAge": 0,
+    "noCache": true
+  }
+...
+```
+
+#### via `withdata.config.js` file
+
+The following code will disable all caching (same as above).
+
+```js
+  const config = {
+    "maxAge": 0,
+    "noCache": true
+  };
+
+  export default config;
+```
