@@ -6,10 +6,10 @@ const SECOND = 1000;
 
 store.addPlugin([expirePlugin, observePlugin]);
 
-const defaultConfig = { maxAge: 1, noCache: true };
+const defaultConfig = { maxAge: 1 };
 
 export const set = (key, value, maxAge = defaultConfig.maxAge) => {
-  const expiresAt = new Date().getTime() + (maxAge * SECOND);
+  const expiresAt = new Date().getTime() + maxAge * SECOND;
   store.set(key, value, expiresAt);
 };
 
