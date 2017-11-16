@@ -9,12 +9,8 @@ store.addPlugin([expirePlugin, observePlugin]);
 const defaultConfig = { maxAge: 0, noCache: true };
 
 export const set = (key, value, maxAge = defaultConfig.maxAge) => {
-  if (maxAge) {
-    const expiresAt = new Date().getTime() + maxAge * SECOND;
-    store.set(key, value, expiresAt);
-  } else {
-    store.set(key, value);
-  }
+  const expiresAt = new Date().getTime() + (maxAge * SECOND);
+  store.set(key, value, expiresAt);
 };
 
 export const observeData = (
