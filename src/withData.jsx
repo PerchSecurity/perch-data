@@ -13,7 +13,8 @@ function withData(actions) {
         actionNames.forEach(actionName => {
           data[actionName] = {
             loading: true,
-            refetch: () => this.getData(actionName, { noCache: true })
+            refetch: params =>
+              this.getData(actionName, { ...params, noCache: true })
           };
         });
         this.state = {
