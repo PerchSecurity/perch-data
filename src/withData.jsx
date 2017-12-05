@@ -7,31 +7,50 @@ function withData(actions) {
     return class extends React.Component {
       constructor(props) {
         super(props);
-        // Set all queries to { loading: true, refetch: getData() }
+        // Set all queries to { loading: true, applyParams: fn(), refetch: fn() }
         const data = {};
+        const appliedParams = {};
         const actionNames = Object.keys(actions);
         actionNames.forEach(actionName => {
           data[actionName] = {
             loading: true,
-            goToPage: page => this.goToPage(actionName, page),
-            refetch: params =>
-              this.getData(actionName, { ...params, noCache: true })
+            applyParams: params => this.applyParams(actionName, params),
+            refetch: () => this.getData(actionName, { noCache: true })
           };
+          appliedParams[actionName] = {};
         });
         this.state = {
-          data,
-          polls: [],
-          observeIds: []
+          data, // Data object to send to child
+          appliedParams, // Filters, pages, sorts, etc (matches the structure of `data`)
+          polls: [], // Ids for polling - stop on unmount
+          observeIds: [] // Ids for store.js observables - unobserve on unmount
         };
       }
 
-      goToPage = (actionName, page) => {
-        this.setState(
-          prevState =>
-            update(prevState, {
-              data: { [actionName]: { loading: { $set: true } } }
-            }),
-          this.getData(actionName, { page })
+      componentDidUpdate(prevProps, prevState) {
+        // This code exists because the setState callback would not work for applyParams below
+        // May be related to https://github.com/facebook/react/issues/1740
+        const hasNewParams =
+          prevState.appliedParams !== this.state.appliedParams;
+        if (hasNewParams) {
+          const actionNames = Object.keys(this.state.appliedParams);
+          actionNames.forEach(actionName => {
+            if (
+              prevState.appliedParams[actionName] !==
+              this.state.appliedParams[actionName]
+            ) {
+              this.getData(actionName);
+            }
+          });
+        }
+      }
+
+      applyParams = (actionName, params) => {
+        this.setState(prevState =>
+          update(prevState, {
+            data: { [actionName]: { loading: { $set: true } } },
+            appliedParams: { [actionName]: { $merge: params } }
+          })
         );
       };
 
@@ -64,6 +83,7 @@ function withData(actions) {
 
       getData = (actionName, options = {}) => {
         const { noCache, ...overrides } = options;
+        const appliedParams = this.state.appliedParams[actionName];
         let action;
         let childOptions = {};
 
@@ -76,7 +96,7 @@ function withData(actions) {
 
         observeData(
           actionName,
-          () => action({ ...this.props, ...overrides }),
+          () => action({ ...appliedParams, ...this.props, ...overrides }),
           data => this.onNext(actionName, data),
           error => this.onError(actionName, error),
           { noCache, ...childOptions }
