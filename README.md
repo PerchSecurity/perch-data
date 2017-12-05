@@ -45,7 +45,7 @@ withData(queryObject: Object)
 
 The withData funtion currently only accepts one argument, an object of queries to execute.
 
-For each entry, the key is the **desired name of the entry** in the data prop and the value is the **function that will yeild the corrosponding data** (as a promise). The name of the entry is also used as the default cacheKey, if the action does not provide one.
+For each entry, the key is the **desired name of the entry** in the data prop and the value is the **function that will yield the corrosponding data** (as a promise). The name of the entry is also used as the default cacheKey, if the action does not provide one.
 
 In the following snippet, the child component will get a `data` prop with a `notifications` entry that will eventually resolve the vaule of `getNotifications`.
 
@@ -112,7 +112,7 @@ The `data` prop will have one entry for each action you pass it, and that entry 
 - `loading: Boolean` - this is `true` while the data is being fetched. once it is returned or an error is thrown, the value will update to `false`
 - `error: Object` - this Axios error object is returned if Axios throws an exception (404, 500, ERRCON, etc)
 - `refetch(): Function` - function that refetches the data for the given entry
-- `applyParmas(params: Object): Function` - function that allows a resource to be sorted, filtered, paginated, etc.
+- `applyParams(params: Object): Function` - function that allows a resource to be sorted, filtered, paginated, etc.
 - If the API request is successful, the response is spread into the entry for the action.
 
 Continuing with the example from above:
