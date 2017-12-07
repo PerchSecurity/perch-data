@@ -15,6 +15,7 @@ function withData(actions) {
           data[actionName] = {
             loading: true,
             applyParams: params => this.applyParams(actionName, params),
+            clearParams: () => this.clearParams(actionName),
             refetch: () => this.getData(actionName, { noCache: true })
           };
           appliedParams[actionName] = {};
@@ -25,6 +26,12 @@ function withData(actions) {
           polls: [], // Ids for polling - stop on unmount
           observeIds: [] // Ids for store.js observables - unobserve on unmount
         };
+      }
+
+      // REACT LIFECYCLE METHODS
+
+      componentDidMount() {
+        this.fetchAll();
       }
 
       componentDidUpdate(prevProps, prevState) {
@@ -45,11 +52,37 @@ function withData(actions) {
         }
       }
 
+      componentWillUnmount() {
+        const { observeIds, polls } = this.state;
+        observeIds.forEach(cacheKey => {
+          unobserveData(cacheKey);
+        });
+        polls.forEach(poll => {
+          clearInterval(poll);
+        });
+      }
+
+      // CUSTOM METHODS
+
+      fetchAll = () => {
+        // Request data for each query
+        const actionNames = Object.keys(actions);
+        actionNames.forEach(actionName => this.getData(actionName));
+      };
+
       applyParams = (actionName, params) => {
         this.setState(prevState =>
           update(prevState, {
             data: { [actionName]: { loading: { $set: true } } },
             appliedParams: { [actionName]: { $merge: params } }
+          })
+        );
+      };
+
+      clearParams = actionName => {
+        this.setState(prevState =>
+          update(prevState, {
+            appliedParams: { [actionName]: { $set: {} } }
           })
         );
       };
@@ -119,22 +152,6 @@ function withData(actions) {
           }
         });
       };
-
-      componentDidMount() {
-        // Request data for each query
-        const actionNames = Object.keys(actions);
-        actionNames.forEach(actionName => this.getData(actionName));
-      }
-
-      componentWillUnmount() {
-        const { observeIds, polls } = this.state;
-        observeIds.forEach(cacheKey => {
-          unobserveData(cacheKey);
-        });
-        polls.forEach(poll => {
-          clearInterval(poll);
-        });
-      }
 
       render() {
         return <WrappedComponent data={this.state.data} {...this.props} />;
