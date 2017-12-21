@@ -16,7 +16,8 @@ function withData(actions) {
             loading: true,
             applyParams: params => this.applyParams(actionName, params),
             clearParams: () => this.clearParams(actionName),
-            refetch: () => this.getData(actionName, { noCache: true })
+            refetch: () => this.getData(actionName, { noCache: true }),
+            optimisticUpdate: optimisticData => this.onNext(actionName, optimisticData)
           };
           appliedParams[actionName] = {};
         });
