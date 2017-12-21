@@ -1,13 +1,17 @@
 # Changelog
 
+## 0.7.0
+
+- Add `optimisticUpdate()` to rerender with data
+
 ## 0.6.0
 
-- Add clearParams() to nuke all appliedParams
+- Add `clearParams()` to nuke all appliedParams
 - Refactor for cleanliness
 
 ## 0.5.0
 
-- Add applyParams method for sorting, filtering, paginating, etc
+- Add `applyParams()` method for sorting, filtering, paginating, etc
 - Fix bug with `setState` callback (using `ComponendDidUpdate` as temp fix)
 - Remove `goToPage()` in favor of `applyParams()`
 

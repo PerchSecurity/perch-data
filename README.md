@@ -188,6 +188,10 @@ const Notifications = ({ data: { notifications } }) => (
 );
 ```
 
+### Optimistic UI updates with via optimisticUpdate()
+
+After sending data to the server you may want to update the UI before refetching - that's why `optimisticUpdate()` exists. This function can be used to temporarily update the data _for the current component_. This **does not** update the store so it will not apply to other components that are observing the query.
+
 ### Error handling
 
 Currently `withData` assumes that your error will be [formatted like an Axios error](https://github.com/axios/axios#handling-errors). This was explicitly added to filter out any errors from the child component that were not caused by data fetching.
