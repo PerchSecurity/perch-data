@@ -107,7 +107,7 @@ function withData(actions) {
           this.setState(prevState =>
             update(prevState, {
               data: {
-                [actionName]: { $merge: { error, loading: false } }
+                [actionName]: { $merge: { loading: false, error } }
               }
             })
           );
