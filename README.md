@@ -87,7 +87,9 @@ withData({
 })
 ```
 
-**NOTE:** Any action that you would like to do custom caching with but return a `cacheKey` and `fromCache` property to avoid the default behavior from overriding the custom action cache. You should implement the store.js [expire plugin](https://github.com/marcuswestin/store.js/blob/master/plugins/expire.js) to prevent key recycling if your action uses store.js internally. See [axios-store-plugin](https://github.com/usePF/axios-store-plugin) for an example implementation.
+**NOTE:** Any action that you would like to handle the caching for should return `__cacheKey` and `__fromCache` properties in the result to avoid the default cache from overriding any custom caching.
+
+Consider implementing the store.js [expire plugin](https://github.com/marcuswestin/store.js/blob/master/plugins/expire.js) to prevent key recycling if your action uses store.js internally. See [axios-store-plugin](https://github.com/usePF/axios-store-plugin) for an example implementation of custom caching.
 
 #### Polling
 

@@ -14,12 +14,13 @@ export const set = (key, value, maxAge = defaultConfig.maxAge) => {
 };
 
 export const observeData = (
-  defaultKey,
+  actionName,
   dataFn,
   onNext,
   onError,
   options = {}
 ) => {
+  const defaultKey = `withData__${actionName}`;
   const { maxAge, noCache, pollInterval } = { ...defaultConfig, ...options };
   const cachedData = store.get(defaultKey);
   const shouldUseCache = !noCache && cachedData;
@@ -29,9 +30,9 @@ export const observeData = (
   };
   const fetchFreshData = () =>
     dataFn()
-      .then(({ cacheKey, fromCache, ...data } = {}) => {
-        const key = cacheKey || defaultKey;
-        if (!fromCache) set(key, data, maxAge);
+      .then(({ __cacheKey, __fromCache, ...data } = {}) => {
+        const key = __cacheKey || defaultKey;
+        if (!__fromCache) set(key, data, maxAge);
         return key;
       })
       .catch(onError);
