@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.0
+
+- BREAKING: Rename `fromCache` and `cacheKey` to `__fromCache` and `__cacheKey` to prevent collisions with fetched data
+- Add support for pending actions #15
+- Prefix cache entries with `withData__`
+
 ## 0.7.0
 
 - Add `optimisticUpdate()` to rerender with data
