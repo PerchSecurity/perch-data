@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.0
+
+- Add new `cache` utilities for working directly with the store (`get`, `getSync`, `set`, `clear`)
+
 ## 0.8.0
 
 - BREAKING: Rename `fromCache` and `cacheKey` to `__fromCache` and `__cacheKey` to prevent collisions with fetched data
