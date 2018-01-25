@@ -15,13 +15,13 @@ export const set = (cacheKey, value, maxAge = defaultConfig.maxAge) => {
 
 export const getSync = (cacheKey, defaultValue) => {
   const result = store.get(cacheKey) || defaultValue;
-  return result ? { ...result, __cacheKey: cacheKey, __fromCache: true } : null;
+  return result ? { ...result, __cacheKey: cacheKey, __fromCache: true } : undefined;
 };
 
 export const get = (cacheKey, defaultValue) =>
   Promise.resolve(getSync(cacheKey, defaultValue));
 
-export const clear = () => store.clearAll();
+export const clear = () => Promise.resolve(store.clearAll());
 
 export const observeData = (
   actionName,
