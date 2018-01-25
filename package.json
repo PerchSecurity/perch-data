@@ -1,6 +1,6 @@
 {
   "name": "withdata",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "Utilities for managing data via props. Inspired by apollo-client.",
   "main": "index.js",
   "scripts": {

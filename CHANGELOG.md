@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.9.2
+
+- Fix `cache.clear()` to return a promise
+- Return `undefined` when the cache has no results for a given key
+
 ## 0.9.1
 
 - Set `__fromCache = true` when returning results from cache
