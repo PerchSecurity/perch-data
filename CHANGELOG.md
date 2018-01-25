@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.9.1
+
+- Set `__fromCache = true` when returning results from cache
+- Return `null` when the cache has no results for a given key
+
 ## 0.9.0
 
 - Add new `cache` utilities for working directly with the store (`get`, `getSync`, `set`, `clear`)

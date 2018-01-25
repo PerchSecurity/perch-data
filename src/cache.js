@@ -8,14 +8,14 @@ store.addPlugin([expirePlugin, observePlugin]);
 
 const defaultConfig = { maxAge: 1 };
 
-export const set = (key, value, maxAge = defaultConfig.maxAge) => {
+export const set = (cacheKey, value, maxAge = defaultConfig.maxAge) => {
   const expiresAt = new Date().getTime() + maxAge * SECOND;
-  return Promise.resolve(store.set(key, value, expiresAt));
+  return Promise.resolve(store.set(cacheKey, value, expiresAt));
 };
 
 export const getSync = (cacheKey, defaultValue) => {
   const result = store.get(cacheKey) || defaultValue;
-  return { ...result, __cacheKey: cacheKey };
+  return result ? { ...result, __cacheKey: cacheKey, __fromCache: true } : null;
 };
 
 export const get = (cacheKey, defaultValue) =>
