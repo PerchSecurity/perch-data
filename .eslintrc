@@ -5,6 +5,11 @@
     "prettier"
   ],
   "env": {
-    "browser": true
-  }
+    "browser": true,
+    "node": true,
+    "jest": true
+  },
+  "plugins": [
+    "react"
+  ]
 }
