@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.10.0
+
+- Rename `perch-data`
+- Remove default export, `withData` is now a named export
+
 ## 0.9.2
 
 - Fix `cache.clear()` to return a promise

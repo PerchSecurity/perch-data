@@ -1,6 +1,6 @@
-# withData
+# Perch Data
 
-⚛️ withData is a [Higher Order Component](https://reactjs.org/docs/higher-order-components.html) (HOC) that wraps any React component and gives it a new prop: `data`.
+⚛️ perch-data is a set of tools for making the process of handling data less cumbersome. This package consists of a [Higher Order Component](https://reactjs.org/docs/higher-order-components.html) (HOC) that wraps any React component with `data`, and a caching layer.
 
 🚀 Inspired by [react-apollo](http://dev.apollodata.com/react/queries.html).
 
@@ -9,13 +9,13 @@
 Currently only availble via GitHub:
 
 ```sh
-npm install usePF/withdata
+npm install usePF/perch-data
 ```
 
 ## Usage
 
 ```js
-import withData from 'withdata';
+import { withData } from 'perch-data';
 import { getNotifications } from './myapi'; // getNotifications returns a promise
 
 const Notifications = ({ data: { notifications } }) => (
@@ -43,9 +43,9 @@ How to use and love the withData HOC.
 withData(queryObject: Object)
 ```
 
-The withData funtion currently only accepts one argument, an object of queries to execute.
+The withData function currently only accepts one argument, an object of queries to execute.
 
-For each entry, the key is the **desired name of the entry** in the data prop and the value is the **function that will yield the corrosponding data** (as a promise). The name of the entry is also used as the default cacheKey, if the action does not provide one.
+For each entry, the key is the **desired name of the entry** in the data prop and the value is the **function that will yield the corresponding data** (as a promise). The name of the entry is also used as the default cacheKey, if the action does not provide one.
 
 In the following snippet, the child component will get a `data` prop with a `notifications` entry that will eventually resolve the vaule of `getNotifications`.
 
@@ -93,7 +93,7 @@ Consider implementing the store.js [expire plugin](https://github.com/marcuswest
 
 #### Polling
 
-If you want to poll an action at a regular interval, pass a `pollInterval` entry to the options object like we did for cache-control above. The poll will automaticlly start when the component is mounted and clear when the component is unmounted.
+If you want to poll an action at a regular interval, pass a `pollInterval` entry to the options object like we did for cache-control above. The poll will automatically start when the component is mounted and clear when the component is unmounted.
 
 The following snippet will call `getNotifications` every 5 seconds:
 
@@ -133,7 +133,7 @@ const Notifications = ({ data: { notifications } }) => (
   <div>
     {notifications.loading && <LoadingSpinner />}
     {notifications.error && <ErrorMessage error={notifications.error} />}
-    {notifications.results && 
+    {notifications.results &&
       notifications.results.map(notification => (
         <Notification
           id={notification.id}
@@ -164,7 +164,7 @@ const Notifications = ({ data: { notifications } }) => {
 const Notifications = ({ data: { notifications } }) => {
   return (
   <div>
-    <button onClick={() => notifications.applyParams({ orderby: 'priorty' })}>Load more</Button>
+    <button onClick={() => notifications.applyParams({ orderby: 'priority' })}>Load more</Button>
   </div>
 );
 ```
