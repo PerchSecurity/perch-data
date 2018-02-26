@@ -2,7 +2,7 @@
   "name": "withdata",
   "version": "0.9.2",
   "description": "Utilities for managing data via props. Inspired by apollo-client.",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "lib": "babel src --out-dir lib",
     "lint": "prettier --write src/**/*.{js,jsx} && eslint src/**",
