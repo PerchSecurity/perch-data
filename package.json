@@ -1,7 +1,7 @@
 {
-  "name": "withdata",
   "version": "0.9.2",
-  "description": "Utilities for managing data via props. Inspired by apollo-client.",
+  "name": "perch-data",
+  "description": "Utilities for managing data. Inspired by react-apollo.",
   "main": "lib/index.js",
   "scripts": {
     "lib": "babel src --out-dir lib",
@@ -10,10 +10,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/usePF/withdata.git"
+    "url": "git+https://github.com/usePF/perch-data.git"
   },
   "keywords": [
-    "hoc",
     "data",
     "rest",
     "perch"
@@ -21,9 +20,9 @@
   "author": "Charles Burgess",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/usePF/withdata/issues"
+    "url": "https://github.com/usePF/perch-data/issues"
   },
-  "homepage": "https://github.com/usePF/withdata#readme",
+  "homepage": "https://github.com/usePF/perch-data#readme",
   "peerDependencies": {
     "react": ">=15.0.0"
   },
