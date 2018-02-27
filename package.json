@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "immutability-helper": "^2.6.4",
+    "shallowequal": "^1.0.2",
     "store": "^2.0.12"
   }
 }
