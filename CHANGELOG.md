@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.11.0
+
+- Add axiosStore from usePF/axios-store-plugin
+
 ## 0.10.0
 
 - Rename `perch-data`
