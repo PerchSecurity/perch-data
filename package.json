@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/usePF/perch-data#readme",
   "peerDependencies": {
+    "prop-types": "^15.0.0",
     "react": ">=15.0.0"
   },
   "devDependencies": {
@@ -41,11 +42,12 @@
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.10.3",
     "prettier": "^1.10.2",
+    "prop-types": ">=15.0.0",
     "react": ">=15.0.0"
   },
   "dependencies": {
     "immutability-helper": "^2.6.4",
-    "shallowequal": "^1.0.2",
+    "lodash.isequal": "^4.5.0",
     "store": "^2.0.12"
   }
 }

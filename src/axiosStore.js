@@ -1,6 +1,6 @@
 import store from "store";
 import expirePlugin from "store/plugins/expire";
-import shallowEqual from "shallowequal";
+import isEqual from "lodash.isequal";
 
 const SECOND = 1000;
 const TEN_SECONDS_FROM_NOW = () => new Date().getTime() + 10 * SECOND;
@@ -25,7 +25,7 @@ const axiosStore = axiosInstance => {
           .then(() => axiosInstance.get(...arg))
           .then(({ data }) => ({ ...data, __cacheKey: cacheKey }))
           .catch(error => {
-            if (shallowEqual(store.get(cacheKey), PLACEHOLDER))
+            if (isEqual(store.get(cacheKey), PLACEHOLDER))
               store.remove(cacheKey);
             throw error;
           });
