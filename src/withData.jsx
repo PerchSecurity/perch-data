@@ -131,41 +131,43 @@ function withData(actions) {
           action = actions[actionName];
         }
 
-        store.observeData(
-          actionName,
-          () => action({ ...appliedParams, ...this.props, ...overrides }),
-          data => this.onNext(actionName, data),
-          error => this.onError(actionName, error),
-          { noCache, ...childOptions }
-        ).then(({ observableId, poll }) => {
-          if (poll) {
-            this.setState(prevState =>
-              update(prevState, {
-                observeIds: { $push: [observableId] },
-                polls: { $push: [poll] }
-              })
-            );
-          } else {
-            this.setState(prevState =>
-              update(prevState, {
-                observeIds: { $push: [observableId] }
-              })
-            );
-          }
-        });
+        store
+          .observeData(
+            actionName,
+            () => action({ ...appliedParams, ...this.props, ...overrides }),
+            data => this.onNext(actionName, data),
+            error => this.onError(actionName, error),
+            { noCache, ...childOptions }
+          )
+          .then(({ observableId, poll }) => {
+            if (poll) {
+              this.setState(prevState =>
+                update(prevState, {
+                  observeIds: { $push: [observableId] },
+                  polls: { $push: [poll] }
+                })
+              );
+            } else {
+              this.setState(prevState =>
+                update(prevState, {
+                  observeIds: { $push: [observableId] }
+                })
+              );
+            }
+          });
       };
 
       render() {
         return <WrappedComponent data={this.state.data} {...this.props} />;
       }
-    };
+    }
 
     Enhanced.contextTypes = {
       store: PropTypes.shape({
         observeData: PropTypes.func,
-        unobserveData: PropTypes.func,
+        unobserveData: PropTypes.func
       }).isRequired
-    }
+    };
 
     return Enhanced;
   }
