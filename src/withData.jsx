@@ -1,12 +1,12 @@
 import React from "react";
+import PropTypes from "prop-types";
 import update from "immutability-helper";
-import { observeData, unobserveData } from "./cache";
 
 function withData(actions) {
   function enhance(WrappedComponent) {
-    return class extends React.Component {
-      constructor(props) {
-        super(props);
+    class Enhanced extends React.Component {
+      constructor(props, context) {
+        super(props, context);
         // Set all queries to { loading: true, applyParams: fn(), refetch: fn() }
         const data = {};
         const appliedParams = {};
@@ -56,8 +56,9 @@ function withData(actions) {
 
       componentWillUnmount() {
         const { observeIds, polls } = this.state;
+        const { store } = this.context;
         observeIds.forEach(cacheKey => {
-          unobserveData(cacheKey);
+          store.unobserveData(cacheKey);
         });
         polls.forEach(poll => {
           clearInterval(poll);
@@ -117,6 +118,7 @@ function withData(actions) {
       };
 
       getData = (actionName, options = {}) => {
+        const { store } = this.context;
         const { noCache, ...overrides } = options;
         const appliedParams = this.state.appliedParams[actionName];
         let action;
@@ -129,7 +131,7 @@ function withData(actions) {
           action = actions[actionName];
         }
 
-        observeData(
+        store.observeData(
           actionName,
           () => action({ ...appliedParams, ...this.props, ...overrides }),
           data => this.onNext(actionName, data),
@@ -157,6 +159,15 @@ function withData(actions) {
         return <WrappedComponent data={this.state.data} {...this.props} />;
       }
     };
+
+    Enhanced.contextTypes = {
+      store: PropTypes.shape({
+        observeData: PropTypes.func,
+        unobserveData: PropTypes.func,
+      }).isRequired
+    }
+
+    return Enhanced;
   }
 
   return enhance;
