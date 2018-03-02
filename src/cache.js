@@ -15,7 +15,7 @@ export const set = (cacheKey, value, maxAge = defaultConfig.maxAge) => {
 
 export const getSync = (cacheKey, defaultValue) => {
   const result = store.get(cacheKey) || defaultValue;
-  return result ? { ...result, __cacheKey: cacheKey, __fromCache: true } : undefined;
+  return result && { ...result, __cacheKey: cacheKey, __fromCache: true };
 };
 
 export const get = (cacheKey, defaultValue) =>
@@ -23,13 +23,7 @@ export const get = (cacheKey, defaultValue) =>
 
 export const clear = () => Promise.resolve(store.clearAll());
 
-export const observeData = (
-  keyName,
-  dataFn,
-  onNext,
-  onError,
-  options = {}
-) => {
+export const observeData = (keyName, dataFn, onNext, onError, options = {}) => {
   const defaultKey = `withData__${keyName}`;
   const { maxAge, noCache, pollInterval } = { ...defaultConfig, ...options };
   const cachedData = keyName && store.get(defaultKey);
@@ -51,10 +45,8 @@ export const observeData = (
   if (pollInterval) {
     const poll = setInterval(() => fetchFreshData(), pollInterval * SECOND);
     return shouldUseCache
-      ? useDataFromCache()
-        .then(({ observableId }) => ({ observableId, poll }))
-      : fetchFreshData()
-        .then(key => ({ observableId: observeKey(key), poll }));
+      ? useDataFromCache().then(({ observableId }) => ({ observableId, poll }))
+      : fetchFreshData().then(key => ({ observableId: observeKey(key), poll }));
   } else if (shouldUseCache) {
     return useDataFromCache();
   }

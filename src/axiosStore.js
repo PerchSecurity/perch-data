@@ -25,7 +25,9 @@ const axiosStore = axiosInstance => {
           .then(() => axiosInstance.get(...arg))
           .then(({ data }) => ({ ...data, __cacheKey: cacheKey }))
           .catch(error => {
-            if (isEqual(store.get(cacheKey), PLACEHOLDER)) store.remove(cacheKey);
+            if (isEqual(store.get(cacheKey), PLACEHOLDER)) {
+              store.remove(cacheKey);
+            }
             throw error;
           });
   };
