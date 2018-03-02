@@ -24,19 +24,20 @@ export const get = (cacheKey, defaultValue) =>
 export const clear = () => Promise.resolve(store.clearAll());
 
 export const observeData = (
-  actionName,
+  keyName,
   dataFn,
   onNext,
   onError,
   options = {}
 ) => {
-  const defaultKey = `withData__${actionName}`;
+  const defaultKey = `withData__${keyName}`;
   const { maxAge, noCache, pollInterval } = { ...defaultConfig, ...options };
-  const cachedData = store.get(defaultKey);
+  const cachedData = keyName && store.get(defaultKey);
   const shouldUseCache = !noCache && cachedData;
+  const observeKey = key => store.observe(key, onNext);
   const useDataFromCache = () => {
     onNext(cachedData);
-    return Promise.resolve(store.observe(defaultKey, onNext));
+    return Promise.resolve({ observableId: observeKey(defaultKey) });
   };
   const fetchFreshData = () =>
     dataFn()
@@ -50,14 +51,14 @@ export const observeData = (
   if (pollInterval) {
     const poll = setInterval(() => fetchFreshData(), pollInterval * SECOND);
     return shouldUseCache
-      ? useDataFromCache().then(observeId => [observeId, poll])
-      : fetchFreshData().then(key => [store.observe(key, onNext), poll]);
+      ? useDataFromCache()
+        .then(({ observableId }) => ({ observableId, poll }))
+      : fetchFreshData()
+        .then(key => ({ observableId: observeKey(key), poll }));
   } else if (shouldUseCache) {
     return useDataFromCache();
   }
-  return fetchFreshData().then(key => store.observe(key, onNext));
+  return fetchFreshData().then(key => ({ observableId: observeKey(key) }));
 };
 
-export const unobserveData = observeId => {
-  store.unobserve(observeId);
-};
+export const unobserveData = observeId => store.unobserve(observeId);

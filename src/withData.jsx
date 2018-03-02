@@ -135,20 +135,18 @@ function withData(actions) {
           data => this.onNext(actionName, data),
           error => this.onError(actionName, error),
           { noCache, ...childOptions }
-        ).then(result => {
-          if (Array.isArray(result)) {
-            const [observeId, poll] = result;
+        ).then(({ observableId, poll }) => {
+          if (poll) {
             this.setState(prevState =>
               update(prevState, {
-                observeIds: { $push: [observeId] },
+                observeIds: { $push: [observableId] },
                 polls: { $push: [poll] }
               })
             );
           } else {
-            const observeId = result;
             this.setState(prevState =>
               update(prevState, {
-                observeIds: { $push: [observeId] }
+                observeIds: { $push: [observableId] }
               })
             );
           }
