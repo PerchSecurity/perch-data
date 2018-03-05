@@ -67,29 +67,6 @@ function withData(actions) {
 
       // CUSTOM METHODS
 
-      fetchAll = () => {
-        // Request data for each query
-        const actionNames = Object.keys(actions);
-        actionNames.forEach(actionName => this.getData(actionName));
-      };
-
-      applyParams = (actionName, params) => {
-        this.setState(prevState =>
-          update(prevState, {
-            data: { [actionName]: { loading: { $set: true } } },
-            appliedParams: { [actionName]: { $merge: params } }
-          })
-        );
-      };
-
-      clearParams = actionName => {
-        this.setState(prevState =>
-          update(prevState, {
-            appliedParams: { [actionName]: { $set: {} } }
-          })
-        );
-      };
-
       // Set data[actionName] from { loading: false } + the result of the request
       onNext = (actionName, data) => {
         this.setState(prevState =>
@@ -125,7 +102,7 @@ function withData(actions) {
         let childOptions = {};
 
         if (Array.isArray(actions[actionName])) {
-          action = actions[actionName][0];
+          [action] = actions[actionName];
           childOptions = actions[actionName][1] || {};
         } else {
           action = actions[actionName];
@@ -155,6 +132,29 @@ function withData(actions) {
               );
             }
           });
+      };
+
+      fetchAll = () => {
+        // Request data for each query
+        const actionNames = Object.keys(actions);
+        actionNames.forEach(actionName => this.getData(actionName));
+      };
+
+      applyParams = (actionName, params) => {
+        this.setState(prevState =>
+          update(prevState, {
+            data: { [actionName]: { loading: { $set: true } } },
+            appliedParams: { [actionName]: { $merge: params } }
+          })
+        );
+      };
+
+      clearParams = actionName => {
+        this.setState(prevState =>
+          update(prevState, {
+            appliedParams: { [actionName]: { $set: {} } }
+          })
+        );
       };
 
       render() {
