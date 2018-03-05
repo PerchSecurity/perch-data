@@ -14,16 +14,17 @@ npm install usePF/perch-data
 
 ## Quick links:
 
-- [the Data component](##Data)
-- [withData](##withData)
-- [cache](##cache)
-- [axiosStore](##axiosStore)
+- [the Data component](#data)
+- [withData](#withdata)
+- [StoreProvider](#storeprovider)
+- [cache](#cache)
+- [axiosStore](#axiosstore)
 
 ## Data
 
 The Data component is the preferred method of getting data into a component. It uses the [Render Prop](https://reactjs.org/docs/render-props.html) approach for passing fetched data as a function to the children prop.
 
-### Usage
+### Data Usage
 
 ```jsx
 import { Data } from 'perch-data';
@@ -52,7 +53,7 @@ export default Notifications;
 2. You can use State in your `variables` so no need to `applyParams`
 3. Its just a component so debugging and composing are 🍰
 
-### API
+### Data API
 
 #### Data component props:
 
@@ -74,12 +75,7 @@ export default Notifications;
 
 withData is a [Higher Order Component](https://reactjs.org/docs/higher-order-components.html) (HOC) that wraps any component with a new prop: `data`.
 
-### Why use withData over Data?
-
-1. There really is not a great reason unless you're grabbing several different pieces of info, but a better approach would be to compose the Data components or actions
-2. You really like HOCs
-
-### Usage
+### withData Usage
 
 ```jsx
 import { withData } from 'perch-data';
@@ -100,7 +96,12 @@ Notifications.propTypes = {
 export default withData({ notifications: getNotifications })(Notifications);
 ```
 
-### API
+### Why use withData over Data?
+
+1. There really is not a great reason unless you're grabbing several different pieces of info, but a better approach would be to compose the Data components or actions
+2. You really like HOCs
+
+### withData API
 
 ```js
 withData(queryObject: Object)
@@ -232,7 +233,7 @@ const Notifications = ({ data: { notifications } }) => {
 );
 ```
 
-```js
+```jsx
 const Notifications = ({ data: { notifications } }) => {
   return (
   <div>
@@ -262,3 +263,27 @@ After sending data to the server you may want to update the UI before refetching
 Currently `withData` assumes that your error will be [formatted like an Axios error](https://github.com/axios/axios#handling-errors). This was explicitly added to filter out any errors from the child component that were not caused by data fetching.
 
 In the future, this may become more generic and support other formats.
+
+## StoreProvider
+
+The StoreProvider creates one global store instance that can be observed across the application. This allows different modules and components to all hook into and observe the same store.
+
+### StoreProvider Usage
+
+```jsx
+import { StoreProvider, cache } from 'perch-data';
+
+const App = () => (
+  <StoreProvider store={cache}>
+    <YourApp />
+  </StoreProvider>
+);
+```
+
+### StoreProvider API
+
+#### StoreProvider props:
+
+- `store: Object` - _**Required**_
+  - `observeData: Function` - _**Required**_ Returns data from the cache or fetches it - see code for signature - must return an id for unsubscribing
+  - `unobserveData: Function` - _**Required**_ Accepts an id and stops observing it
