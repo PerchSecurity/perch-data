@@ -6,7 +6,7 @@
   "scripts": {
     "lib": "babel src --out-dir lib",
     "lint": "prettier --write src/**/*.{js,jsx} && eslint src/**",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -25,7 +25,8 @@
   "homepage": "https://github.com/usePF/perch-data#readme",
   "peerDependencies": {
     "prop-types": "^15.0.0",
-    "react": ">=15.0.0"
+    "react": ">=15.0.0",
+    "react-dom": ">=15.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -41,13 +42,15 @@
     "eslint-plugin-import": "^2.9.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.7.0",
+    "jest": "^22.4.2",
     "prettier": "^1.10.2",
-    "prop-types": ">=15.0.0",
-    "react": ">=15.0.0"
+    "prop-types": "^15.0.0",
+    "react": "^15.0.0",
+    "react-dom": "^15.0.0",
+    "react-test-renderer": "^15.0.0"
   },
   "dependencies": {
     "immutability-helper": "^2.6.4",
-    "jest": "^22.4.2",
     "lodash.isequal": "^4.5.0",
     "store": "^2.0.12"
   }
