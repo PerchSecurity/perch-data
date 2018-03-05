@@ -1,20 +1,86 @@
 # Perch Data
 
-⚛️ perch-data is a set of tools for making the process of handling data less cumbersome. This package consists of a [Higher Order Component](https://reactjs.org/docs/higher-order-components.html) (HOC) that wraps any React component with `data`, and a caching layer.
+perch-data is a set of tools for making the process of handling data less cumbersome.
 
 🚀 Inspired by [react-apollo](http://dev.apollodata.com/react/queries.html).
 
 ## Installing
 
-Currently only availble via GitHub:
+Currently only available via GitHub:
 
 ```sh
 npm install usePF/perch-data
 ```
 
-## Usage
+## Quick links:
 
-```js
+- [the Data component](##Data)
+- [withData](##withData)
+- [cache](##cache)
+- [axiosStore](##axiosStore)
+
+## Data
+
+The Data component is the preferred method of getting data into a component. It uses the [Render Prop](https://reactjs.org/docs/render-props.html) approach for passing fetched data as a function to the children prop.
+
+### Usage
+
+```jsx
+import { Data } from 'perch-data';
+import { getNotifications } from './myapi'; // getNotifications returns a promise
+
+const Notifications = () => (
+  <div>
+    <Data action={getNotifications}>
+      {({ data, error, loading }) => {
+        if (loading) return <div> Loading... </div>;
+        if (error) return <div> ERROR! </div>;
+        if (data) return <div> Notifications: {data.total_count} </div>;
+      }}
+  </div>
+);
+
+Notifications.propTypes = {};
+
+export default Notifications;
+```
+
+### Why use Data over withData?
+
+1. It can detect changes in Props and refetch data automatically
+2. You can use State in your `variables` so no need to `applyParams`
+3. Its just a component so debugging and composing are 🍰
+
+### API
+
+#### Data component props:
+
+- `action: Function` - _**Required**_ Promise that will return the data
+- `children: Function` - _**Required**_ Function to use with the Result object (below)
+- `options: Object`
+  - `pollInterval: Number` - Repeats the action every `N` seconds
+  - `maxAge: Number` - Number of seconds to retain the result in the cache
+- `variables: Object` - Object to be passed to `action` like so: `action(variables)` - note, if you pass new variables to `Data`, it will refetch the data with the new variables
+
+#### Result object:
+
+- `data: Object` - If the API request is successful, the response is returned here
+- `loading: Boolean` - this is `true` while the data is being fetched. once it is returned or an error is thrown, the value will update to `false`
+- `error: Object` - this Axios error object is returned if Axios throws an exception (404, 500, ERRCON, etc) or error thrown from a promise
+- `refetch(): Function` - Function that triggers a refresh of the data
+
+## withData
+
+withData is a [Higher Order Component](https://reactjs.org/docs/higher-order-components.html) (HOC) that wraps any component with a new prop: `data`.
+
+### Why use withData over Data?
+
+1. There really is not a great reason unless you're grabbing several different pieces of info, but a better approach would be to compose the Data components or actions
+2. You really like HOCs
+
+### Usage
+
+```jsx
 import { withData } from 'perch-data';
 import { getNotifications } from './myapi'; // getNotifications returns a promise
 
@@ -33,11 +99,7 @@ Notifications.propTypes = {
 export default withData({ notifications: getNotifications })(Notifications);
 ```
 
-## API
-
-How to use and love the withData HOC.
-
-### withData()
+### API
 
 ```js
 withData(queryObject: Object)
@@ -55,7 +117,7 @@ withData({
 })
 ```
 
-#### Using props
+### Using props
 
 Using props is simple, just wrap your function in a function. The only parameter is `props`.
 
@@ -72,7 +134,7 @@ withData({
 })
 ```
 
-#### Cache control options
+### Cache control options
 
 By default, every entry is cached for one second. You can overwrite this by passing an array (instead of a function) as the entry's value, with the first item being the action (function that returns a promise) and the second being an object with any of the following properties:
 
@@ -91,7 +153,7 @@ withData({
 
 Consider implementing the store.js [expire plugin](https://github.com/marcuswestin/store.js/blob/master/plugins/expire.js) to prevent key recycling if your action uses store.js internally. See [axios-store-plugin](https://github.com/usePF/axios-store-plugin) for an example implementation of custom caching.
 
-#### Polling
+### Polling
 
 If you want to poll an action at a regular interval, pass a `pollInterval` entry to the options object like we did for cache-control above. The poll will automatically start when the component is mounted and clear when the component is unmounted.
 
@@ -103,7 +165,7 @@ withData({
 })
 ```
 
-#### Composing HOCs
+### Composing HOCs
 
 If you have another HOC in the component like [withStyles](https://material-ui-next.com/customization/css-in-js/#api) you will want all of the HOCs to be applied. You can simply "nest" them as you would for function composition, or use a library like [Recompose](https://github.com/acdlite/recompose).
 
@@ -119,7 +181,7 @@ The `data` prop will have one entry for each action you pass it, and that entry 
 
 Continuing with the example from above:
 
-```js
+```jsx
 
 // notifications is being returned from the API like so
 // {
@@ -150,7 +212,7 @@ const Notifications = ({ data: { notifications } }) => (
 
 Every entry in the `data` prop has a `applyParams()` function added to it. This function accepts one parameter (params: Object)
 
-```js
+```jsx
 const Notifications = ({ data: { notifications } }) => {
   const nextPage = (notifications.page_number || 0) + 1;
   return (
@@ -160,7 +222,7 @@ const Notifications = ({ data: { notifications } }) => {
 );
 ```
 
-```js
+```jsx
 const Notifications = ({ data: { notifications } }) => {
   return (
   <div>
@@ -182,7 +244,7 @@ const Notifications = ({ data: { notifications } }) => {
 
 If at any point you want to re-request the data from the server, the `refetch()` function can be used to re-execute the data fetch. This will not reset pagination or other params, instead redoing exactly the same query that was last executed.
 
-```js
+```jsx
 const Notifications = ({ data: { notifications } }) => (
   <div>
     <button onClick={notifications.refetch}>Reload Data</Button>
