@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.12.0
+
+- Add Data component
+- Add StoreProvider for a centralized, observable application store
+- Fix and upgrade ESLint
+- Update docs
+- Refactor placeholder from `{ loading: true }` to `null`
+- Refactor deps to use modular lodash
+- Refactor cache promise signature
+
 ## 0.11.0
 
 - Add axiosStore from usePF/axios-store-plugin
