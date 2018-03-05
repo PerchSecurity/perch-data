@@ -37,6 +37,7 @@ const Notifications = () => (
         if (error) return <div> ERROR! </div>;
         if (data) return <div> Notifications: {data.total_count} </div>;
       }}
+    </Data>
   </div>
 );
 
