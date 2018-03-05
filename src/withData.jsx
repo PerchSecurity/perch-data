@@ -1,12 +1,12 @@
 import React from "react";
+import PropTypes from "prop-types";
 import update from "immutability-helper";
-import { observeData, unobserveData } from "./cache";
 
 function withData(actions) {
   function enhance(WrappedComponent) {
-    return class extends React.Component {
-      constructor(props) {
-        super(props);
+    class Enhanced extends React.Component {
+      constructor(props, context) {
+        super(props, context);
         // Set all queries to { loading: true, applyParams: fn(), refetch: fn() }
         const data = {};
         const appliedParams = {};
@@ -56,8 +56,9 @@ function withData(actions) {
 
       componentWillUnmount() {
         const { observeIds, polls } = this.state;
+        const { store } = this.context;
         observeIds.forEach(cacheKey => {
-          unobserveData(cacheKey);
+          store.unobserveData(cacheKey);
         });
         polls.forEach(poll => {
           clearInterval(poll);
@@ -65,29 +66,6 @@ function withData(actions) {
       }
 
       // CUSTOM METHODS
-
-      fetchAll = () => {
-        // Request data for each query
-        const actionNames = Object.keys(actions);
-        actionNames.forEach(actionName => this.getData(actionName));
-      };
-
-      applyParams = (actionName, params) => {
-        this.setState(prevState =>
-          update(prevState, {
-            data: { [actionName]: { loading: { $set: true } } },
-            appliedParams: { [actionName]: { $merge: params } }
-          })
-        );
-      };
-
-      clearParams = actionName => {
-        this.setState(prevState =>
-          update(prevState, {
-            appliedParams: { [actionName]: { $set: {} } }
-          })
-        );
-      };
 
       // Set data[actionName] from { loading: false } + the result of the request
       onNext = (actionName, data) => {
@@ -117,48 +95,81 @@ function withData(actions) {
       };
 
       getData = (actionName, options = {}) => {
+        const { store } = this.context;
         const { noCache, ...overrides } = options;
         const appliedParams = this.state.appliedParams[actionName];
         let action;
         let childOptions = {};
 
         if (Array.isArray(actions[actionName])) {
-          action = actions[actionName][0];
+          [action] = actions[actionName];
           childOptions = actions[actionName][1] || {};
         } else {
           action = actions[actionName];
         }
 
-        observeData(
-          actionName,
-          () => action({ ...appliedParams, ...this.props, ...overrides }),
-          data => this.onNext(actionName, data),
-          error => this.onError(actionName, error),
-          { noCache, ...childOptions }
-        ).then(result => {
-          if (Array.isArray(result)) {
-            const [observeId, poll] = result;
-            this.setState(prevState =>
-              update(prevState, {
-                observeIds: { $push: [observeId] },
-                polls: { $push: [poll] }
-              })
-            );
-          } else {
-            const observeId = result;
-            this.setState(prevState =>
-              update(prevState, {
-                observeIds: { $push: [observeId] }
-              })
-            );
-          }
-        });
+        store
+          .observeData(
+            actionName,
+            () => action({ ...appliedParams, ...this.props, ...overrides }),
+            data => this.onNext(actionName, data),
+            error => this.onError(actionName, error),
+            { noCache, ...childOptions }
+          )
+          .then(({ observableId, poll }) => {
+            if (poll) {
+              this.setState(prevState =>
+                update(prevState, {
+                  observeIds: { $push: [observableId] },
+                  polls: { $push: [poll] }
+                })
+              );
+            } else {
+              this.setState(prevState =>
+                update(prevState, {
+                  observeIds: { $push: [observableId] }
+                })
+              );
+            }
+          });
+      };
+
+      fetchAll = () => {
+        // Request data for each query
+        const actionNames = Object.keys(actions);
+        actionNames.forEach(actionName => this.getData(actionName));
+      };
+
+      applyParams = (actionName, params) => {
+        this.setState(prevState =>
+          update(prevState, {
+            data: { [actionName]: { loading: { $set: true } } },
+            appliedParams: { [actionName]: { $merge: params } }
+          })
+        );
+      };
+
+      clearParams = actionName => {
+        this.setState(prevState =>
+          update(prevState, {
+            appliedParams: { [actionName]: { $set: {} } }
+          })
+        );
       };
 
       render() {
         return <WrappedComponent data={this.state.data} {...this.props} />;
       }
+    }
+
+    Enhanced.contextTypes = {
+      store: PropTypes.shape({
+        observeData: PropTypes.func,
+        unobserveData: PropTypes.func
+      }).isRequired
     };
+
+    return Enhanced;
   }
 
   return enhance;
