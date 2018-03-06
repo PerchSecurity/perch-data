@@ -219,7 +219,7 @@ const Notifications = ({ data: { notifications } }) => {
   const nextPage = (notifications.page_number || 0) + 1;
   return (
   <div>
-    <button onClick={() => notifications.applyParams({ page: nextPage })}>Load more</Button>
+    <Button onClick={() => notifications.applyParams({ page: nextPage })}>Load more</Button>
   </div>
 );
 ```
@@ -228,7 +228,7 @@ const Notifications = ({ data: { notifications } }) => {
 const Notifications = ({ data: { notifications } }) => {
   return (
   <div>
-    <button onClick={() => notifications.applyParams({ orderby: 'priority' })}>Load more</Button>
+    <Button onClick={() => notifications.applyParams({ orderby: 'priority' })}>Load more</Button>
   </div>
 );
 ```
@@ -237,7 +237,7 @@ const Notifications = ({ data: { notifications } }) => {
 const Notifications = ({ data: { notifications } }) => {
   return (
   <div>
-    <button onClick={() => notifications.applyParams({ filter: 'foo' })}>Load more</Button>
+    <Button onClick={() => notifications.applyParams({ filter: 'foo' })}>Load more</Button>
   </div>
 );
 ```
@@ -249,7 +249,7 @@ If at any point you want to re-request the data from the server, the `refetch()`
 ```jsx
 const Notifications = ({ data: { notifications } }) => (
   <div>
-    <button onClick={notifications.refetch}>Reload Data</Button>
+    <Button onClick={notifications.refetch}>Reload Data</Button>
   </div>
 );
 ```
