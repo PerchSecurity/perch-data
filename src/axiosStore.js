@@ -22,7 +22,10 @@ const axiosStore = axiosInstance => {
         })
       : createPlaceholder(cacheKey)
           .then(() => axiosInstance.get(...arg))
-          .then(({ data }) => ({ ...data, __cacheKey: cacheKey }))
+          .then(({ data }) => {
+            const wrappedData = Array.isArray(data) ? { results: data } : data;
+            return { ...wrappedData, __cacheKey: cacheKey };
+          })
           .catch(error => {
             if (store.get(cacheKey) === PLACEHOLDER) {
               store.remove(cacheKey);

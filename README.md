@@ -287,3 +287,19 @@ const App = () => (
 - `store: Object` - _**Required**_
   - `observeData: Function` - _**Required**_ Returns data from the cache or fetches it - see code for signature - must return an id for unsubscribing
   - `unobserveData: Function` - _**Required**_ Accepts an id and stops observing it
+
+## axiosStore
+
+axiosStore is a light wrapper around axios that allows for caching get requests using `cache.js`.
+
+**NOTE:** As of v0.13.0 all array responses will instead return an object with a results array.
+
+Example:
+
+```js
+APIResponse = [ 0, 2, 4, 6, 8 ];
+
+// gets turned into
+
+formattedResponse = { results: [ 0, 2, 4, 6, 8 ] };
+```

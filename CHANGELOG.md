@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.13.0
+
+- Convert array responses into objects with results arrays
+
 ## 0.12.0
 
 - Add Data component
