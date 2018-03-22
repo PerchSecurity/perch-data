@@ -23,7 +23,14 @@ const axiosStore = axiosInstance => {
       : createPlaceholder(cacheKey)
           .then(() => axiosInstance.get(...arg))
           .then(({ data }) => {
-            const wrappedData = Array.isArray(data) ? { results: data } : data;
+            let wrappedData = {};
+            if (Array.isArray(data)) {
+              wrappedData = { results: data };
+            } else if (typeof data === "string") {
+              wrappedData = { value: data };
+            } else {
+              wrappedData = data;
+            }
             return { ...wrappedData, __cacheKey: cacheKey };
           })
           .catch(error => {
