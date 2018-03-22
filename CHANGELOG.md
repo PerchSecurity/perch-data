@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.13.1
+
+- Convert string responses to objects with value property
+
 ## 0.13.0
 
 - Convert array responses into objects with results arrays
