@@ -1,12 +1,16 @@
 # Changelog
 
+## 0.14.0
+
+- Allow `null` maxAge to never expire a key
+
 ## 0.13.2
 
-- Convert number responses to objects with value property
+- Convert Number responses to objects with value property
 
 ## 0.13.1
 
-- Convert string responses to objects with value property
+- Convert String responses to objects with value property
 
 ## 0.13.0
 
