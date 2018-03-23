@@ -26,7 +26,7 @@ const axiosStore = axiosInstance => {
             let wrappedData = {};
             if (Array.isArray(data)) {
               wrappedData = { results: data };
-            } else if (typeof data === "string") {
+            } else if (typeof data === "string" || typeof data === "number") {
               wrappedData = { value: data };
             } else {
               wrappedData = data;
