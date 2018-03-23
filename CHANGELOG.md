@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.13.2
+
+- Convert number responses to objects with value property
+
 ## 0.13.1
 
 - Convert string responses to objects with value property
