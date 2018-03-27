@@ -9,9 +9,8 @@ store.addPlugin([defaultsPlugin, expirePlugin, observePlugin]);
 
 const defaultConfig = { maxAge: 1 };
 
-export const initializeStore = (initialState = {}) => {
-  store.defaults(initialState);
-};
+export const initializeStore = (initialState = {}) =>
+  Promise.resolve(store.defaults(initialState));
 
 export const set = (cacheKey, value, maxAge) => {
   // Allow null to bypass default cache value and act as "never expire"
@@ -22,13 +21,12 @@ export const set = (cacheKey, value, maxAge) => {
     : Promise.resolve(store.set(cacheKey, value, expiresAt));
 };
 
-export const getSync = (cacheKey, defaultValue) => {
-  const result = store.get(cacheKey) || defaultValue;
+export const getSync = cacheKey => {
+  const result = store.get(cacheKey);
   return result && { ...result, __cacheKey: cacheKey, __fromCache: true };
 };
 
-export const get = (cacheKey, defaultValue) =>
-  Promise.resolve(getSync(cacheKey, defaultValue));
+export const get = cacheKey => Promise.resolve(getSync(cacheKey));
 
 export const clear = () => Promise.resolve(store.clearAll());
 
