@@ -1,12 +1,17 @@
 import store from "store";
+import defaultsPlugin from "store/plugins/defaults";
 import expirePlugin from "store/plugins/expire";
 import observePlugin from "store/plugins/observe";
 
 const SECOND = 1000;
 
-store.addPlugin([expirePlugin, observePlugin]);
+store.addPlugin([defaultsPlugin, expirePlugin, observePlugin]);
 
 const defaultConfig = { maxAge: 1 };
+
+export const initializeStore = (initialState = {}) => {
+  store.defaults(initialState);
+};
 
 export const set = (cacheKey, value, maxAge) => {
   // Allow null to bypass default cache value and act as "never expire"
