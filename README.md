@@ -260,13 +260,15 @@ After sending data to the server you may want to update the UI before refetching
 
 ### Error handling
 
-Currently `withData` assumes that your error will be [formatted like an Axios error](https://github.com/axios/axios#handling-errors). This was explicitly added to filter out any errors from the child component that were not caused by data fetching.
+Currently `withData` assumes that your error will be [formatted like an Axios error](https://github.com/axios/axios#handling-errors).
+This was explicitly added to filter out any errors from the child component that were not caused by data fetching.
 
 In the future, this may become more generic and support other formats.
 
 ## StoreProvider
 
-The StoreProvider creates one global store instance that can be observed across the application. This allows different modules and components to all hook into and observe the same store.
+The StoreProvider creates one global store instance that can be observed across the application.
+This allows different modules and components to all hook into and observe the same store.
 
 ### StoreProvider Usage
 
@@ -274,7 +276,10 @@ The StoreProvider creates one global store instance that can be observed across 
 import { StoreProvider, cache } from 'perch-data';
 
 const App = () => (
-  <StoreProvider store={cache}>
+  <StoreProvider
+    initialValues={{ foo: 'bar' }}
+    store={cache}
+  >
     <YourApp />
   </StoreProvider>
 );
@@ -287,19 +292,92 @@ const App = () => (
 - `store: Object` - _**Required**_
   - `observeData: Function` - _**Required**_ Returns data from the cache or fetches it - see code for signature - must return an id for unsubscribing
   - `unobserveData: Function` - _**Required**_ Accepts an id and stops observing it
+- `initialValues: Object` - This is a function to pre-populate your store with default values. If the value is already in the store (persisted) it _**will not**_ be overwritten.
+
+## Cache
+
+Cache is a set of utils for directly accessing the cache layer used by perch-data.
+You can use the cache as a store for `StoreProvider` (see below) or as a standalone, promise-based store.
+
+### Cache Usage
+
+```js
+import { cache } from 'perch-data';
+
+const initializeStore = () => cache.initializeStore({ apples: ['fuji'] });
+
+const getApples = () => cache.get('apples'); // undefined if not in store and not set in initializeStore()
+
+const setApples = () => cache.set('apples', ['fuji', 'gala', 'golden delicious']); // stored for 1 second by default
+
+const setApplesNeverExpire = () => cache.set('apples', ['gala'], null); // null skips the 1 second default
+
+const setApplesOneHour = () => cache.set('apples', ['golden delicious'], 60 * 60); // maxAge is counted in seconds
+
+// getSync() and setSync() are available if a promise is not desired - usage is identical
+
+const clearStore = () => cache.clear();
+```
+
+### Cache API
+
+#### initializeStore( initialState )
+
+- `initialState: Object` - key/value pairs to use as default values if the key is not found in the store
+
+This method returns nothing
+
+NOTES:
+
+- These do not overwrite existing values in the store, they only are used if the key does not exist in the store
+- These values are never written to the store, so they cannot be persisted across sessions
+
+#### get( cacheKey )
+
+- `cacheKey: String` - _**required**_ - the key (id) to search the store for
+
+This method returns a promise, and the result of the promise should be an object (best practice)
+
+#### getSync
+
+This is identical to the `get` method, but returns the result synchronously
+
+#### set( cacheKey, value, maxAge )
+
+- `cacheKey: String` - _**required**_ - the key (id) to save the value in the store as
+- `value: Any (Object)` - _**required**_ - the data being stored - should be an object (best practice)
+- `maxAge: Number` - number of seconds to keep the item in the store ( default: 1 )
+
+This method returns a promise, and the result of the promise should be the `value`
+
+#### setSync
+
+This is identical to the `set` method, but returns the result synchronously
+
+#### clear
+
+This method accepts no parameters and returns nothing - but it nukes _everything_
 
 ## axiosStore
 
 axiosStore is a light wrapper around axios that allows for caching get requests using `cache.js`.
 
-**NOTE:** As of v0.13.0 all array responses will instead return an object with a results array.
+**NOTE:** As of v0.13.0 all array responses will instead return an object with a `results` array.
+
+**NOTE:** As of v0.13.1 all string responses will instead return an object with a `value prop.
+
+**NOTE:** As of v0.13.2 all number responses will instead return an object with a `value` prop.
+
+**NOTE:** As of v0.15.0 all boolean responses will instead return an object with a `value` prop.
 
 Example:
 
 ```js
-APIResponse = [ 0, 2, 4, 6, 8 ];
+APIResponse = [ 0, 2, 4, 6, 8 ]; // => { results: [ 0, 2, 4, 6, 8 ] }
 
-// gets turned into
+APIResponse = 'foobar'; // => { value: 'foobar' }
 
-formattedResponse = { results: [ 0, 2, 4, 6, 8 ] };
+APIResponse = 47; // => { value: 47 }
+
+APIResponse = true; // => { value: true }
 ```

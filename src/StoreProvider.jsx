@@ -3,7 +3,8 @@ import PropTypes from "prop-types";
 
 class StoreProvider extends React.Component {
   getChildContext() {
-    const { store } = this.props;
+    const { store, initialValues } = this.props;
+    store.initializeStore(initialValues);
     return { store };
   }
 
@@ -14,10 +15,16 @@ class StoreProvider extends React.Component {
 
 StoreProvider.propTypes = {
   children: PropTypes.node.isRequired,
+  initialValues: PropTypes.shape({}),
   store: PropTypes.shape({
+    initializeStore: PropTypes.func,
     observeData: PropTypes.func,
     unobserveData: PropTypes.func
   }).isRequired
+};
+
+StoreProvider.defaultProps = {
+  initialValues: null
 };
 
 StoreProvider.childContextTypes = {

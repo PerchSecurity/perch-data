@@ -1,20 +1,29 @@
 # Changelog
 
+## 0.15.0
+
+- Add `cache.initializeStore()` to handle default store values
+- Add `initialValues` prop to `StoreProvider` to leverage `cache.initializeStore()`
+- Remove the `defaultValue` argument from `cache.get()`
+- Convert Boolean responses to objects with `value` property
+- Update docs and add cache docs
+- Update dependencies
+
 ## 0.14.0
 
 - Allow `null` maxAge to never expire a key
 
 ## 0.13.2
 
-- Convert Number responses to objects with value property
+- Convert Number responses to objects with `value` property
 
 ## 0.13.1
 
-- Convert String responses to objects with value property
+- Convert String responses to objects with `value` property
 
 ## 0.13.0
 
-- Convert array responses into objects with results arrays
+- Convert array responses into objects with `results` arrays
 
 ## 0.12.0
 
