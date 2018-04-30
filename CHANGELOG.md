@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.15.1
+
+- Add a guard against undefined data updates
+- Ensure refetch never hits the cache
+
 ## 0.15.0
 
 - Add `cache.initializeStore()` to handle default store values

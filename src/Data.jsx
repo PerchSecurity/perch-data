@@ -32,26 +32,23 @@ class Data extends React.Component {
   }
 
   onNext = data => {
-    this.setState({ data, loading: false });
+    if (data !== undefined) this.setState({ data, loading: false });
   };
 
   onError = error => {
     this.setState({ error, loading: false });
   };
 
-  fetchData = () => {
+  fetchData = overrides => {
     const { action, options, variables } = this.props;
     const { store } = this.context;
     const actionWithVariables = () => action(variables);
     this.setState({ loading: true });
     store
-      .observeData(
-        null,
-        actionWithVariables,
-        this.onNext,
-        this.onError,
-        options
-      )
+      .observeData(null, actionWithVariables, this.onNext, this.onError, {
+        ...options,
+        ...overrides
+      })
       .then(({ observableId, poll }) => {
         // Stop listening to the old data if it does not have the same id
         if (
@@ -68,7 +65,10 @@ class Data extends React.Component {
   };
 
   render() {
-    return this.props.children({ ...this.state, refetch: this.fetchData });
+    return this.props.children({
+      ...this.state,
+      refetch: () => this.fetchData({ noCache: true })
+    });
   }
 }
 
