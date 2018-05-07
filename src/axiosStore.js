@@ -1,23 +1,12 @@
-import storejs from "store";
-import expirePlugin from "store/plugins/expire";
-
-storejs.addPlugin(expirePlugin);
-
-const SECOND = 1000;
-const TEN_SECONDS_FROM_NOW = () => new Date().getTime() + 10 * SECOND;
 const PLACEHOLDER = null;
 
 const axiosStore = (axiosInstance, store) => {
-  const createPlaceholder = cacheKey =>
-    store
-      ? store.set(cacheKey, PLACEHOLDER, TEN_SECONDS_FROM_NOW())
-      : Promise.resolve(
-          storejs.set(cacheKey, PLACEHOLDER, TEN_SECONDS_FROM_NOW())
-        );
+  const createPlaceholder = cacheKey => store.set(cacheKey, PLACEHOLDER, 10);
 
   const reqOrCache = (options = {}, ...arg) => {
     const cacheKey = `axios__${JSON.stringify(options)}`;
-    const cachedData = store ? store.getSync(cacheKey) : storejs.get(cacheKey);
+    const cachedData = store.getSync(cacheKey);
+    // console.log(cachedData)
     return cachedData
       ? Promise.resolve({
           ...cachedData,
@@ -39,13 +28,12 @@ const axiosStore = (axiosInstance, store) => {
             } else {
               wrappedData = data;
             }
+            store.set(cacheKey, wrappedData);
             return { ...wrappedData, __cacheKey: cacheKey };
           })
           .catch(error => {
-            if (store && store.getSync(cacheKey) === PLACEHOLDER) {
+            if (store.getSync(cacheKey) === PLACEHOLDER) {
               store.remove(cacheKey);
-            } else if (!store && storejs.get(cacheKey) === PLACEHOLDER) {
-              storejs.remove(cacheKey);
             }
             throw error;
           });
