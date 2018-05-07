@@ -42,7 +42,7 @@ class Data extends React.Component {
   fetchData = overrides => {
     const { action, options, variables } = this.props;
     const { store } = this.context;
-    const actionWithVariables = () => action(variables);
+    const actionWithVariables = () => action(variables, this.context);
     this.setState({ loading: true });
     store
       .observeData(null, actionWithVariables, this.onNext, this.onError, {
@@ -88,6 +88,7 @@ Data.defaultProps = {
 };
 
 Data.contextTypes = {
+  api: PropTypes.func,
   store: PropTypes.shape({
     observeData: PropTypes.func,
     unobserveData: PropTypes.func
