@@ -61,3 +61,5 @@ export const observeData = (keyName, dataFn, onNext, onError, options = {}) => {
 };
 
 export const unobserveData = observeId => store.unobserve(observeId);
+
+export const remove = cacheKey => Promise.resolve(store.remove(cacheKey));
