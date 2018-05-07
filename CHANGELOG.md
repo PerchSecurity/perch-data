@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.16.0
+
+- Add Action component
+- Add `api` prop to StoreProvider, which makes API available via context
+- Add context to actions called by Data
+- Add 'remove' method to cache.js
+- Add logic to respect existing `maxAge`s when setting the cache
+- Refactor axiosStore.js to accept a store or default to a new instance of cache.js
+
 ## 0.15.1
 
 - Add a guard against undefined data updates
