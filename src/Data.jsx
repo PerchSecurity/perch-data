@@ -32,7 +32,7 @@ class Data extends React.Component {
   }
 
   onNext = data => {
-    if (data !== undefined) this.setState({ data, loading: false });
+    if (data) this.setState({ data, loading: false });
   };
 
   onError = error => {
