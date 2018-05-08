@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.16.1
+
+- Ignore falsy / duplicate values for Data's onNext event
+- Only keep existing cache key maxAge if valid and larger than specified
+
 ## 0.16.0
 
 - Add Action component
