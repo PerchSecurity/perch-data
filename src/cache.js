@@ -15,13 +15,14 @@ export const initializeStore = (initialState = {}) =>
 export const set = (cacheKey, value, maxAge) => {
   // Allow null to bypass default cache value and act as "never expire"
   const userMaxAgeOrDefault = maxAge || defaultConfig.maxAge;
-  const existingExpiration = store.getExpiration(cacheKey);
-  const expiresAt = new Date().getTime() + userMaxAgeOrDefault * SECOND;
+  const existingExpiration = store.get(cacheKey)
+    ? store.getExpiration(cacheKey)
+    : null;
+  const newExpiration = new Date().getTime() + userMaxAgeOrDefault * SECOND;
+  const expiresAt = Math.max(existingExpiration, newExpiration);
   return !existingExpiration && maxAge === null
     ? Promise.resolve(store.set(cacheKey, value))
-    : Promise.resolve(
-        store.set(cacheKey, value, existingExpiration || expiresAt)
-      );
+    : Promise.resolve(store.set(cacheKey, value, expiresAt));
 };
 
 export const getSync = cacheKey => {
