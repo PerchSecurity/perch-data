@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.17.1
+
+- Fix for initialization syntax
+
 ## 0.17.0
 
 - Add garbage collection to StoreProvider and cache.js
