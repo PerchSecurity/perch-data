@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.17.0
+
+- Add garbage collection to StoreProvider and cache.js
+
 ## 0.16.1
 
 - Ignore falsy / duplicate values for Data's onNext event
