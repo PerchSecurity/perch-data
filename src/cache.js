@@ -71,5 +71,5 @@ export const remove = cacheKey => Promise.resolve(store.remove(cacheKey));
 export const removeExpiredKeys = store.each((value, cacheKey) => {
   const expiresAt = store.getExpiration(cacheKey);
   const now = new Date().getTime();
-  if (expiresAt && expiresAt <= now) remove(cacheKey);
+  if (expiresAt && expiresAt <= now) store.remove(cacheKey);
 });
