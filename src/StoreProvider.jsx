@@ -5,7 +5,10 @@ import { axiosStore } from "./";
 const MINUTE = 1000 * 60;
 
 class StoreProvider extends React.Component {
-  state = { poll: setInterval(this.collectGarbage, MINUTE) };
+  constructor(props) {
+    super(props);
+    this.state = { poll: setInterval(this.collectGarbage, MINUTE) };
+  }
 
   getChildContext() {
     const { api, store, initialValues } = this.props;
@@ -20,7 +23,7 @@ class StoreProvider extends React.Component {
   collectGarbage = () => {
     const { store } = this.props;
     if (store && store.removeExpiredKeys) store.removeExpiredKeys();
-  }
+  };
 
   render() {
     return this.props.children;
