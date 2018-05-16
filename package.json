@@ -4,7 +4,8 @@
   "description": "Utilities for managing data. Inspired by react-apollo.",
   "main": "lib/index.js",
   "scripts": {
-    "lib": "babel src --out-dir lib",
+    "lib": "babel src --out-dir lib --plugins transform-remove-console",
+    "lib-dev": "babel src --out-dir lib",
     "lint": "prettier --write src/**/*.{js,jsx} && eslint src/**",
     "test": "jest"
   },
@@ -32,8 +33,10 @@
     "babel-cli": "^6.26.0",
     "babel-eslint": "^8.2.2",
     "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-dead-code-elimination": "^2.2.2",
     "babel-plugin-transform-export-extensions": "^6.22.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-remove-console": "^6.9.4",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
     "eslint": "^4.19.1",
