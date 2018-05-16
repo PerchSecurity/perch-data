@@ -47,37 +47,42 @@ class Data extends React.Component {
   };
 
   fetchData = overrides => {
-    const { action, options, variables } = this.props;
-    const { store } = this.context;
-    const fetchCount = this.state.fetchCount + 1;
+    this.setState((prevState, props) => {
+      const { action, options, variables } = props;
+      const { store } = this.context;
+      const fetchCount = prevState.fetchCount + 1;
 
-    // Creates a callback which only completes if fetchData hasn't been called
-    // again in the meantime
-    const makeCallback = (fn) => (...args) => {
-      if (this.state.fetchCount === fetchCount) fn(...args);
-    };
-    const actionWithVariables = () => action(variables, this.context);
+      // Creates a callback which only completes if fetchData hasn't been called
+      // again in the meantime
+      const makeCallback = (fn) => (...args) => {
+        if (this.state.fetchCount === fetchCount) fn(...args);
+      };
+      const actionWithVariables = () => action(variables, this.context);
 
-    this.setState({ loading: true, fetchCount });
+      store
+        .observeData(null, actionWithVariables, makeCallback(this.onNext), makeCallback(this.onError), {
+          ...options,
+          ...overrides
+        })
+        .then(({ observableId, poll }) => {
+          // Stop listening to the old data if it does not have the same id
+          if (
+            this.state.observableId &&
+            observableId !== this.state.observableId
+          ) {
+            store.unobserveData(this.state.observableId);
+          }
+          if (this.state.poll && poll !== this.state.poll) {
+            clearInterval(this.state.poll);
+          }
+          this.setState({ observableId, poll });
+        });
 
-    store
-      .observeData(null, actionWithVariables, makeCallback(this.onNext), makeCallback(this.onError), {
-        ...options,
-        ...overrides
-      })
-      .then(({ observableId, poll }) => {
-        // Stop listening to the old data if it does not have the same id
-        if (
-          this.state.observableId &&
-          observableId !== this.state.observableId
-        ) {
-          store.unobserveData(this.state.observableId);
-        }
-        if (this.state.poll && poll !== this.state.poll) {
-          clearInterval(this.state.poll);
-        }
-        this.setState({ observableId, poll });
-      });
+      return {
+        loading: true,
+        fetchCount,
+      };
+    });
   };
 
   render() {
