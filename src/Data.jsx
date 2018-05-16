@@ -10,7 +10,8 @@ class Data extends React.Component {
       error: null,
       loading: true,
       observableId: null,
-      poll: null
+      poll: null,
+      fetchCount: 0
     };
   }
 
@@ -32,8 +33,12 @@ class Data extends React.Component {
   }
 
   onNext = data => {
-    if (data && !isEqual(data, this.state.data)) {
-      this.setState({ data, loading: false });
+    if (data) {
+      if (!isEqual(data, this.state.data)) {
+        this.setState({ data, loading: false });
+      } else {
+        this.setState({ loading: false });
+      }
     }
   };
 
@@ -44,10 +49,19 @@ class Data extends React.Component {
   fetchData = overrides => {
     const { action, options, variables } = this.props;
     const { store } = this.context;
+    const fetchCount = this.state.fetchCount + 1;
+
+    // Creates a callback which only completes if fetchData hasn't been called
+    // again in the meantime
+    const makeCallback = (fn) => (...args) => {
+      if (this.state.fetchCount === fetchCount) fn(...args);
+    };
     const actionWithVariables = () => action(variables, this.context);
-    this.setState({ loading: true });
+
+    this.setState({ loading: true, fetchCount });
+
     store
-      .observeData(null, actionWithVariables, this.onNext, this.onError, {
+      .observeData(null, actionWithVariables, makeCallback(this.onNext), makeCallback(this.onError), {
         ...options,
         ...overrides
       })
