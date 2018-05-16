@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.19.0
+
+- Switch to an in-memory store (from localstorage)
+
 ## 0.18.0
 
 - Rename `data` => `action` for refetchActions
