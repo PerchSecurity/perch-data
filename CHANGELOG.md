@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.19.1
+
+- Fixes an issue where repeat calls to a single data component could cause out of order renders
+- Adds logging in dev ( TODO: replace with cross-repo logging solution )
+- Changes lint rule for if / else blocks
+
 ## 0.19.0
 
 - Switch to an in-memory store (from localstorage)
