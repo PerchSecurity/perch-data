@@ -54,16 +54,22 @@ class Data extends React.Component {
 
       // Creates a callback which only completes if fetchData hasn't been called
       // again in the meantime
-      const makeCallback = (fn) => (...args) => {
+      const makeCallback = fn => (...args) => {
         if (this.state.fetchCount === fetchCount) fn(...args);
       };
       const actionWithVariables = () => action(variables, this.context);
 
       store
-        .observeData(null, actionWithVariables, makeCallback(this.onNext), makeCallback(this.onError), {
-          ...options,
-          ...overrides
-        })
+        .observeData(
+          null,
+          actionWithVariables,
+          makeCallback(this.onNext),
+          makeCallback(this.onError),
+          {
+            ...options,
+            ...overrides
+          }
+        )
         .then(({ observableId, poll }) => {
           // Stop listening to the old data if it does not have the same id
           if (
@@ -80,7 +86,7 @@ class Data extends React.Component {
 
       return {
         loading: true,
-        fetchCount,
+        fetchCount
       };
     });
   };

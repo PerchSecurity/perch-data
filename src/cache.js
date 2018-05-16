@@ -44,7 +44,7 @@ export const observeData = (keyName, dataFn, onNext, onError, options = {}) => {
   const shouldUseCache = !noCache && cachedData;
 
   const observeKey = key => {
-    const observableId = store.observe(key, (data) => {
+    const observableId = store.observe(key, data => {
       if (data === undefined) {
         console.info(`${key} removed from cache`);
       } else {
@@ -67,10 +67,20 @@ export const observeData = (keyName, dataFn, onNext, onError, options = {}) => {
       .then(({ __cacheKey, __fromCache, ...data } = {}) => {
         const key = __cacheKey || defaultKey;
         if (!__fromCache) {
-          console.info(`Setting ${JSON.stringify(key)} in cache (maxAge=${maxAge}) with fresh data: ${JSON.stringify(data)}`);
+          console.info(
+            `Setting ${JSON.stringify(
+              key
+            )} in cache (maxAge=${maxAge}) with fresh data: ${JSON.stringify(
+              data
+            )}`
+          );
           set(key, data, maxAge);
         } else {
-          console.info(`Got cached value from dataFn with cache key ${JSON.stringify(key)}: ${JSON.stringify(data)}`)
+          console.info(
+            `Got cached value from dataFn with cache key ${JSON.stringify(
+              key
+            )}: ${JSON.stringify(data)}`
+          );
         }
         onNext(data);
         return key;
@@ -94,14 +104,14 @@ export const unobserveData = observeId => store.unobserve(observeId);
 export const remove = cacheKey => Promise.resolve(store.remove(cacheKey));
 
 export const removeExpiredKeys = () => {
-  console.info('Removing expired keys from cache');
+  console.info("Removing expired keys from cache");
 
   store.each((value, cacheKey) => {
     const expiresAt = store.getExpiration(cacheKey);
     const now = new Date().getTime();
     if (expiresAt && expiresAt <= now) {
       console.debug(`Removing expired key ${JSON.stringify(cacheKey)}`);
-      store.remove(cacheKey)
-    };
+      store.remove(cacheKey);
+    }
   });
 };
