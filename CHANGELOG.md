@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.18.0
+
+- Rename `data` => `action` for refetchActions
+
 ## 0.17.1
 
 - Fix for initialization syntax
