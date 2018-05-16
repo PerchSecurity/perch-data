@@ -11,5 +11,8 @@
   },
   "plugins": [
     "react"
-  ]
+  ],
+  "rules": {
+    "no-else-return": "off"
+  }
 }
