@@ -42,7 +42,20 @@ export const observeData = (keyName, dataFn, onNext, onError, options = {}) => {
   const { maxAge, noCache, pollInterval } = { ...defaultConfig, ...options };
   const cachedData = keyName && store.get(defaultKey);
   const shouldUseCache = !noCache && cachedData;
-  const observeKey = key => store.observe(key, onNext);
+
+  const observeKey = key => {
+    const observableId = store.observe(key, (data) => {
+      if (data === undefined) {
+        console.info(`${key} removed from cache`);
+      } else {
+        console.info(`${key} value changed in cache: ${JSON.stringify(data)}`);
+        onNext(data);
+      }
+    });
+    console.info(`Observing ${key} with observable ID ${observableId}`);
+    return observableId;
+  };
+
   const useDataFromCache = () => {
     onNext(cachedData);
     return Promise.resolve({ observableId: observeKey(defaultKey) });
