@@ -12,9 +12,10 @@ Currently only available via GitHub:
 npm install usePF/perch-data
 ```
 
-## Quick links:
+## Quick links
 
 - [the Data component](#data)
+- [the Action component](#action)
 - [withData](#withdata)
 - [StoreProvider](#storeprovider)
 - [cache](#cache)
@@ -55,7 +56,7 @@ export default Notifications;
 
 ### Data API
 
-#### Data component props:
+#### Data component props
 
 - `action: Function` - _**Required**_ Promise that will return the data
 - `children: Function` - _**Required**_ Function to use with the Result object (below)
@@ -64,12 +65,117 @@ export default Notifications;
   - `maxAge: Number` - Number of seconds to retain the result in the cache
 - `variables: Object` - Object to be passed to `action` like so: `action(variables)` - note, if you pass new variables to `Data`, it will refetch the data with the new variables
 
-#### Result object:
+#### Context and Data
+
+Whenever the `action` is called, it will receive two arguments: `variables` and `context`. Context is where the `store` and `api` live. **Please use these instead of a custom API or store instance**. By using an instance already attached to context, we can leverage the Action component to reactive update the component without any extra code.
+
+#### Result object
 
 - `data: Object` - If the API request is successful, the response is returned here
 - `loading: Boolean` - this is `true` while the data is being fetched. once it is returned or an error is thrown, the value will update to `false`
 - `error: Object` - this Axios error object is returned if Axios throws an exception (404, 500, ERRCON, etc) or error thrown from a promise
 - `refetch(): Function` - Function that triggers a refresh of the data
+
+## Action
+
+The Action component is the preferred method of triggering actions from within a component. It uses the [Render Prop](https://reactjs.org/docs/render-props.html) approach for passing an action as a function to the children prop.
+
+### Action Usage
+
+```jsx
+import { Action } from 'perch-data';
+import { createNotification } from './myapi'; // createNotification returns a promise
+
+const Notifications = () => (
+  <div>
+    <Action action={createNotification} variables={this.state}>
+      {(create, { data, loading, error }) => (
+        <div>
+          <button onClick={create} disabled={loading}>
+            Create Notification
+          </button>
+        </div>
+      )}
+    </Action>
+  </div>
+);
+
+Notifications.propTypes = {};
+
+export default Notifications;
+```
+
+### What value does Action add over just calling the function?
+
+1. It can be passed `variables` for easy, declarative actions
+2. It can be passed `refetchActions` for simple reactive data updates
+3. It passes `context` to your action so it can use the `store` and `api`
+4. Its just a component so debugging and composing are 🍰
+
+### Action API
+
+#### Action component props
+
+- `action: Function` - _**Required**_ Function that returns a promise
+- `children: Function` - _**Required**_ Function to use with the Result object (below)
+- `refetchData: Array<Object>`
+  - `action: Function` - Action to call after the main `action` resolves
+  - `variables: Object` - Same as variables for Action or Data components
+- `variables: Object` - Object to be passed to `action` like so: `action(variables)` - **Note**: you can pass an object to the `action` from the Result arguments (below) when calling, overriding this prop
+
+#### Context and Action
+
+Whenever the `action` is called, it will receive two arguments: `variables` and `context`. Context is where the `store` and `api` live. **Please use these instead of a custom API or store instance**. By using an instance already attached to context, we can leverage the Data component to do reactive updates without any extra code.
+
+#### Result arguments
+
+- `0: Function` - The first argument is the actionWithVariablesAndRefetch - this is what you want to call in your component
+- `1: Object`:
+  - `data: Object` - If the action is successful, the result is returned here
+  - `loading: Boolean` - this is `true` while the action is being performed. once it is returned or an error is thrown, the value will update to `false`
+  - `error: Object` - this Axios error object is returned if Axios throws an exception (404, 500, ERRCON, etc) or error thrown from a promise
+
+### Advanced Action Usage
+
+```jsx
+import { Action, Data } from 'perch-data';
+import { createNotification, getNotifications } from './myapi';
+
+const Notifications = () => (
+  <div>
+    <Data action={getNotifications}>
+      {({ data, error, loading }) => {
+        if (loading) return <div> Loading... </div>;
+        if (error) return <div> ERROR! </div>;
+        if (data) return (
+          <div>
+            Notifications: {data.total_count}
+          </div>
+          <Action
+            action={createNotification}
+            refetchData={[{ action: getNotifications }]}
+            variables={{ title: 'Hello World', color: 'red' }}
+          >
+            {(create, { loading }) => (
+              <div>
+                <button onClick={create} disabled={loading}>
+                  Create Notification
+                </button>
+              </div>
+            )}
+          </Action>
+        );
+      }}
+    </Data>
+  </div>
+);
+
+Notifications.propTypes = {};
+
+export default Notifications;
+```
+
+In the above example, calling `create()` will create a new notification and reload the list of notifications (causing the list to re-render). No logic is required to update any stores or refetch any requests - it's all automatic!
 
 ## withData
 
@@ -269,6 +375,7 @@ In the future, this may become more generic and support other formats.
 
 The StoreProvider creates one global store instance that can be observed across the application.
 This allows different modules and components to all hook into and observe the same store.
+StoreProvider also creates a single API instance that uses the store from context to reactively update the shared store.
 
 ### StoreProvider Usage
 
@@ -277,6 +384,7 @@ import { StoreProvider, cache } from 'perch-data';
 
 const App = () => (
   <StoreProvider
+    api={axiosInstance}
     initialValues={{ foo: 'bar' }}
     store={cache}
   >
@@ -287,8 +395,9 @@ const App = () => (
 
 ### StoreProvider API
 
-#### StoreProvider props:
+#### StoreProvider props
 
+- `api: AxiosInstance` - This instance of Axios will be wrapped in AxiosStore and use the store from context
 - `store: Object` - _**Required**_
   - `observeData: Function` - _**Required**_ Returns data from the cache or fetches it - see code for signature - must return an id for unsubscribing
   - `unobserveData: Function` - _**Required**_ Accepts an id and stops observing it
