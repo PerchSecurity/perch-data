@@ -25,8 +25,8 @@ class Action extends React.Component {
       .then(res => {
         this.onNext(res);
         return Promise.all(
-          refetchData.map(({ data, variables: vars }) =>
-            data(vars, this.context)
+          refetchData.map(({ action: refetchAction, variables: vars }) =>
+            refetchAction(vars, this.context)
           )
         ).then(() => res);
       })
