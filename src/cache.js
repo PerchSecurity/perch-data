@@ -1,11 +1,14 @@
-import store from "store";
+import engine from "store/src/store-engine";
+import memoryStorage from "store/storages/memoryStorage";
 import defaultsPlugin from "store/plugins/defaults";
 import expirePlugin from "store/plugins/expire";
 import observePlugin from "store/plugins/observe";
 
 const SECOND = 1000;
 
-store.addPlugin([defaultsPlugin, expirePlugin, observePlugin]);
+const storages = [memoryStorage];
+const plugins = [defaultsPlugin, expirePlugin, observePlugin];
+const store = engine.createStore(storages, plugins);
 
 const defaultConfig = { maxAge: 1 };
 
