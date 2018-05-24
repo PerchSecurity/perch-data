@@ -6,7 +6,6 @@ const axiosStore = (axiosInstance, store) => {
   const reqOrCache = (options = {}, ...arg) => {
     const cacheKey = `axios__${JSON.stringify(options)}`;
     const cachedData = store.getSync(cacheKey);
-    // console.log(cachedData)
     return cachedData
       ? Promise.resolve({
           ...cachedData,
