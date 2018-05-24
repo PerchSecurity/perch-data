@@ -4,9 +4,9 @@
   "description": "Utilities for managing data. Inspired by react-apollo.",
   "main": "lib/index.js",
   "scripts": {
-    "lib": "babel src --out-dir lib --plugins transform-remove-console",
-    "lib-dev": "babel src --out-dir lib",
+    "lib": "babel src --out-dir lib",
     "lint": "prettier --write src/**/*.{js,jsx} && eslint src/**",
+    "prepare": "npm run lib",
     "test": "jest"
   },
   "repository": {
