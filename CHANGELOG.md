@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.0
+
+- Migrate docs to `/docs` folder
+- Fix lint issues
+- Remove logs
+- Remove `/lib` folder and replace with npm prepare script
+
 ## 0.19.1
 
 - Fixes an issue where repeat calls to a single data component could cause out of order renders

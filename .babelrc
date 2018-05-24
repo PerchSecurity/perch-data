@@ -2,8 +2,7 @@
   "plugins": [
     "transform-class-properties",
     "transform-object-rest-spread",
-    "transform-export-extensions",
-    "transform-dead-code-elimination"
+    "transform-export-extensions"
   ],
   "presets": [
     "react",

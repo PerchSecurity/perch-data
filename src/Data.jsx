@@ -47,8 +47,8 @@ class Data extends React.Component {
   };
 
   fetchData = overrides => {
-    this.setState((prevState, props) => {
-      const { action, options, variables } = props;
+    this.setState(prevState => {
+      const { action, options, variables } = this.props;
       const { store } = this.context;
       const fetchCount = prevState.fetchCount + 1;
 
