@@ -1,6 +1,6 @@
 {
   "name": "perch-data",
-  "version": "0.19.1",
+  "version": "1.0.0",
   "description": "Utilities for managing data. Inspired by react-apollo.",
   "main": "lib/index.js",
   "scripts": {
