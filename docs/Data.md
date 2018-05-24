@@ -1,4 +1,4 @@
-# Data
+# Data component
 
 The Data component is the preferred method of getting data into a component. It uses the [Render Prop](https://reactjs.org/docs/render-props.html) approach for passing fetched data as a function to the children prop.
 

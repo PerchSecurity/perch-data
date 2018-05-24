@@ -1,5 +1,7 @@
 # withData
 
+**DEPRECATED: Please use the [Data Component](./Data.md) instead.**
+
 withData is a [Higher Order Component](https://reactjs.org/docs/higher-order-components.html) (HOC) that wraps any component with a new prop: `data`.
 
 ## Usage
