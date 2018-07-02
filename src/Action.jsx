@@ -21,8 +21,8 @@ class Action extends React.Component {
 
   actionWithVariablesAndRefetch = ({ variables: overrides } = {}) => {
     const { action, refetchData, variables } = this.props;
-    
-    this.setState({loading: true});
+
+    this.setState({ loading: true });
 
     return action(overrides || variables, this.context)
       .then(res => {
