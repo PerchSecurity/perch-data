@@ -1,5 +1,5 @@
 {
-  "name": "perch-data",
+  "name": "@perchsecurity/perch-data",
   "version": "1.0.0",
   "description": "Utilities for managing data. Inspired by react-apollo.",
   "main": "lib/index.js",
