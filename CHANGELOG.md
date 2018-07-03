@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.0
+
+- Updated Action to set loading state to true when the action is triggered
+
 ## 1.0.0
 
 - Migrate docs to `/docs` folder
