@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Utilities for managing data. Inspired by react-apollo.",
   "main": "lib/index.js",
+  "private": false,
   "scripts": {
     "lib": "babel src --out-dir lib",
     "lint": "prettier --write src/**/*.{js,jsx} && eslint src/**",
