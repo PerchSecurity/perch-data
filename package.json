@@ -27,8 +27,8 @@
   "homepage": "https://github.com/usePF/perch-data#readme",
   "peerDependencies": {
     "prop-types": "^15.0.0",
-    "react": ">=15.0.0",
-    "react-dom": ">=15.0.0"
+    "react": ">=16.7.0",
+    "react-dom": ">=16.7.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
