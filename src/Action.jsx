@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 
+import { StoreContext } from "./";
+
 class Action extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -41,6 +43,8 @@ class Action extends React.Component {
   }
 }
 
+Action.contextType = StoreContext;
+
 Action.propTypes = {
   action: PropTypes.func.isRequired,
   children: PropTypes.func.isRequired,
@@ -56,11 +60,6 @@ Action.propTypes = {
 Action.defaultProps = {
   refetchData: [],
   variables: {}
-};
-
-Action.contextTypes = {
-  store: PropTypes.object.isRequired,
-  api: PropTypes.func
 };
 
 export default Action;

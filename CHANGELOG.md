@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.0
+
+- Upgrade to the new Context API
+
 ## 1.1.0
 
 - Updated Action to set loading state to true when the action is triggered

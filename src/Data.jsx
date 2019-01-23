@@ -2,9 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import isEqual from "lodash.isequal";
 
+import { StoreContext } from "./";
+
 class Data extends React.Component {
-  constructor(props, context) {
-    super(props, context);
+  constructor(props) {
+    super(props);
     this.state = {
       data: null,
       error: null,
@@ -99,6 +101,8 @@ class Data extends React.Component {
   }
 }
 
+Data.contextType = StoreContext;
+
 Data.propTypes = {
   action: PropTypes.func.isRequired,
   children: PropTypes.func.isRequired,
@@ -112,14 +116,6 @@ Data.propTypes = {
 Data.defaultProps = {
   options: {},
   variables: {}
-};
-
-Data.contextTypes = {
-  api: PropTypes.func,
-  store: PropTypes.shape({
-    observeData: PropTypes.func,
-    unobserveData: PropTypes.func
-  }).isRequired
 };
 
 export default Data;

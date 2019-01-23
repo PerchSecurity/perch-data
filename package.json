@@ -47,9 +47,9 @@
     "jest": "^22.4.4",
     "prettier": "^1.16.1",
     "prop-types": "^15.6.2",
-    "react": "^15.0.0",
-    "react-dom": "^15.0.0",
-    "react-test-renderer": "^15.0.0"
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "react-test-renderer": "^16.7.0"
   },
   "dependencies": {
     "immutability-helper": "^2.9.0",
