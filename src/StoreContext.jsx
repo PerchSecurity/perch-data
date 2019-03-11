@@ -1,32 +1,39 @@
-import React from "react";
+import React, { createContext } from "react";
 import PropTypes from "prop-types";
 import { axiosStore } from "./";
 
 const MINUTE = 1000 * 60;
 
-class StoreProvider extends React.Component {
+export const StoreContext = createContext({});
+
+export class StoreProvider extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { poll: setInterval(this.collectGarbage, MINUTE) };
-  }
-
-  getChildContext() {
-    const { api, store, initialValues } = this.props;
+    const { api, store, initialValues } = props;
     store.initializeStore(initialValues);
-    return { api: api && axiosStore(api, store), store };
+    this.state = {
+      api: api && axiosStore(api, store), // eslint-disable-line
+      poll: setInterval(this.collectGarbage, MINUTE),
+      store
+    };
   }
 
   componentWillUnmount() {
-    if (this.state.poll) clearInterval(this.state.poll);
+    const { poll } = this.state;
+    if (poll) clearInterval(poll);
   }
 
   collectGarbage = () => {
-    const { store } = this.props;
+    const { store } = this.state;
     if (store && store.removeExpiredKeys) store.removeExpiredKeys();
   };
 
   render() {
-    return this.props.children;
+    return (
+      <StoreContext.Provider value={this.state}>
+        {this.props.children}
+      </StoreContext.Provider>
+    );
   }
 }
 
@@ -47,9 +54,4 @@ StoreProvider.defaultProps = {
   initialValues: null
 };
 
-StoreProvider.childContextTypes = {
-  api: PropTypes.func,
-  store: PropTypes.object
-};
-
-export default StoreProvider;
+export const StoreConsumer = StoreContext.Consumer;

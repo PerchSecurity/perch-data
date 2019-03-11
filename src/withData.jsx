@@ -1,6 +1,7 @@
 import React from "react";
-import PropTypes from "prop-types";
 import update from "immutability-helper";
+
+import { StoreContext } from "./";
 
 function withData(actions) {
   function enhance(WrappedComponent) {
@@ -162,12 +163,7 @@ function withData(actions) {
       }
     }
 
-    Enhanced.contextTypes = {
-      store: PropTypes.shape({
-        observeData: PropTypes.func,
-        unobserveData: PropTypes.func
-      }).isRequired
-    };
+    Enhanced.contextType = StoreContext;
 
     return Enhanced;
   }

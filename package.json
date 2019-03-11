@@ -1,6 +1,6 @@
 {
   "name": "@perchsecurity/perch-data",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Utilities for managing data. Inspired by react-apollo.",
   "main": "lib/index.js",
   "private": false,
@@ -27,32 +27,32 @@
   "homepage": "https://github.com/usePF/perch-data#readme",
   "peerDependencies": {
     "prop-types": "^15.0.0",
-    "react": ">=15.0.0",
-    "react-dom": ">=15.0.0"
+    "react": ">=16.7.0",
+    "react-dom": ">=16.7.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-eslint": "^8.2.2",
+    "babel-eslint": "^8.2.6",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-export-extensions": "^6.22.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
+    "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",
-    "eslint-config-prettier": "^2.9.0",
-    "eslint-plugin-import": "^2.9.0",
-    "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-react": "^7.7.0",
-    "jest": "^22.4.3",
-    "prettier": "^1.11.1",
-    "prop-types": "^15.0.0",
-    "react": "^15.0.0",
-    "react-dom": "^15.0.0",
-    "react-test-renderer": "^15.0.0"
+    "eslint-config-prettier": "^2.10.0",
+    "eslint-plugin-import": "^2.15.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-react": "^7.12.4",
+    "jest": "^22.4.4",
+    "prettier": "^1.16.1",
+    "prop-types": "^15.6.2",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "react-test-renderer": "^16.7.0"
   },
   "dependencies": {
-    "immutability-helper": "^2.6.6",
+    "immutability-helper": "^2.9.0",
     "lodash.isequal": "^4.5.0",
     "store": "^2.0.12"
   }
