@@ -1,11 +1,15 @@
 const PLACEHOLDER = null;
 
+const defaultCallback = data => data;
+
 const axiosStore = (axiosInstance, store) => {
   const createPlaceholder = cacheKey => store.set(cacheKey, PLACEHOLDER, 10);
 
   const reqOrCache = (options = {}, ...arg) => {
-    const cacheKey = `axios__${JSON.stringify(options)}`;
+    const { callback = defaultCallback, ...axiosOptions } = options;
+    const cacheKey = `axios__${JSON.stringify(axiosOptions)}`;
     const cachedData = store.getSync(cacheKey);
+
     return cachedData
       ? Promise.resolve({
           ...cachedData,
@@ -16,6 +20,7 @@ const axiosStore = (axiosInstance, store) => {
           .then(() => axiosInstance.get(...arg))
           .then(({ data }) => {
             let wrappedData = {};
+
             if (Array.isArray(data)) {
               wrappedData = { results: data };
             } else if (
@@ -27,13 +32,14 @@ const axiosStore = (axiosInstance, store) => {
             } else {
               wrappedData = data;
             }
-            store.set(cacheKey, wrappedData);
-            return { ...wrappedData, __cacheKey: cacheKey };
+
+            return wrappedData;
           })
+          .then(normalizedData => callback(normalizedData))
+          .then(processedData => store.set(cacheKey, processedData))
+          .then(data => ({ ...data, __cacheKey: cacheKey, __fromCache: false }))
           .catch(error => {
-            if (store.getSync(cacheKey) === PLACEHOLDER) {
-              store.remove(cacheKey);
-            }
+            if (store.getSync(cacheKey) === PLACEHOLDER) store.remove(cacheKey);
             throw error;
           });
   };
