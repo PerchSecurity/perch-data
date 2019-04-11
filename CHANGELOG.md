@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.0
+
+- Add a `callback` option to the axios instance
+- Fix `cache.set` not returning the value
+
 ## 1.2.0
 
 - Upgrade to the new Context API
