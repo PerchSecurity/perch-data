@@ -21,3 +21,20 @@ APIResponse = 47; // => { value: 47 }
 
 APIResponse = true; // => { value: true }
 ```
+
+## Formatting responses
+
+If you would like to format the response you should use a callback prop as such:
+
+```js
+const myAction = ({ id }, { api }) => {
+  // This function takes the response and expects you to return an augmented response
+  const formatResponse = response => ({
+    ...response,
+    customNode: "this is data the API did not include, so adding it here"
+  });
+
+  // Pass it to the axios instance with `callback`
+  return api.get(`apiRoot/myEndpoint/${id}`, { callback: formatResponse });
+}
+```
