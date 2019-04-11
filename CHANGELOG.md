@@ -2,7 +2,7 @@
 
 ## 1.3.0
 
-- Add a `callback` option to the axios instance
+- Add a `callback` option to the axios instance for response transformation
 - Fix `cache.set` not returning the value
 
 ## 1.2.0
