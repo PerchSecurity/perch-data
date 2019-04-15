@@ -4,6 +4,7 @@
 
 - Add a `callback` option to the axios instance for response transformation
 - Fix `cache.set` not returning the value
+- Fix issue with unobserving non-existent ids
 
 ## 1.2.0
 
