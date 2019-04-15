@@ -86,7 +86,14 @@ export const observeData = (keyName, dataFn, onNext, onError, options = {}) => {
   }
 };
 
-export const unobserveData = observeId => store.unobserve(observeId);
+export const unobserveData = observeId => {
+  // store.js will error when trying to unobserve an observable that has already been unobserved.
+  try {
+    store.unobserve(observeId);
+  } catch (error) {
+    console.warn(`Unable to unobserve Observable # ${observeId}:\n`, error);
+  }
+};
 
 export const remove = cacheKey => Promise.resolve(store.remove(cacheKey));
 
