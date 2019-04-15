@@ -23,9 +23,14 @@ export const set = (cacheKey, value, maxAge) => {
     : null;
   const newExpiration = new Date().getTime() + userMaxAgeOrDefault * SECOND;
   const expiresAt = Math.max(existingExpiration, newExpiration);
-  return !existingExpiration && maxAge === null
-    ? Promise.resolve(store.set(cacheKey, value))
-    : Promise.resolve(store.set(cacheKey, value, expiresAt));
+
+  if (!existingExpiration && maxAge === null) {
+    store.set(cacheKey, value);
+  } else {
+    store.set(cacheKey, value, expiresAt);
+  }
+
+  return Promise.resolve(value);
 };
 
 export const getSync = cacheKey => {
