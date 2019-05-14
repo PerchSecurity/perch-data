@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.1
+
+- Respect the placeholder cache value
+
 ## 1.3.0
 
 - Add a `callback` option to the axios instance for response transformation
