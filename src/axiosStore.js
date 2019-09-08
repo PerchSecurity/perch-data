@@ -10,7 +10,7 @@ const axiosStore = (axiosInstance, store) => {
     const cacheKey = `axios__${JSON.stringify(axiosOptions)}`;
     const cachedData = store.getSync(cacheKey);
 
-    return cachedData
+    return cachedData !== undefined
       ? Promise.resolve({
           ...cachedData,
           __cacheKey: cacheKey,
